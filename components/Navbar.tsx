@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { FRONTEND_URLS } from '@/lib/constants';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,13 +31,13 @@ export default function Navbar() {
               محصولات
             </Link>
             <Link
-              href="http://localhost:3001/login"
+              href={FRONTEND_URLS.login}
               className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
             >
               ورود
             </Link>
             <Link
-              href="http://localhost:3001/register"
+              href={FRONTEND_URLS.register}
               className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
             >
               ثبت‌نام
@@ -69,10 +70,10 @@ export default function Navbar() {
             <Link href="#products" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               محصولات
             </Link>
-            <Link href="http://localhost:3001/login" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+            <Link href={FRONTEND_URLS.login} className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               ورود
             </Link>
-            <Link href="http://localhost:3001/register" className="block py-2 text-primary-600 font-semibold">
+            <Link href={FRONTEND_URLS.register} className="block py-2 text-primary-600 font-semibold">
               ثبت‌نام
             </Link>
           </div>

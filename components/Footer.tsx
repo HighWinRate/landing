@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { FRONTEND_URLS } from '@/lib/constants';
 
 export default function Footer() {
   return (
@@ -16,17 +17,17 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4">لینک‌های مفید</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="http://localhost:3001/products" className="hover:text-white transition-colors">
+                <Link href={FRONTEND_URLS.products} className="hover:text-white transition-colors">
                   محصولات
                 </Link>
               </li>
               <li>
-                <Link href="http://localhost:3001/login" className="hover:text-white transition-colors">
+                <Link href={FRONTEND_URLS.login} className="hover:text-white transition-colors">
                   ورود
                 </Link>
               </li>
               <li>
-                <Link href="http://localhost:3001/register" className="hover:text-white transition-colors">
+                <Link href={FRONTEND_URLS.register} className="hover:text-white transition-colors">
                   ثبت‌نام
                 </Link>
               </li>

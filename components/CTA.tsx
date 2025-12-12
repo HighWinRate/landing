@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { FRONTEND_URLS } from '@/lib/constants';
 
 export default function CTA() {
   // Note: Since Landing and Frontend are on different origins (ports 3003 and 3001),
@@ -19,13 +20,13 @@ export default function CTA() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="http://localhost:3001/register"
+            href={FRONTEND_URLS.register}
             className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-lg shadow-lg hover:bg-primary-50 hover:text-primary-800 transition-all duration-300 transform hover:scale-105"
           >
             ثبت‌نام رایگان
           </Link>
           <Link
-            href="http://localhost:3001/products"
+            href={FRONTEND_URLS.products}
             className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-gray-900 transition-all duration-300"
           >
             مشاهده محصولات

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { apiClient, Product } from '@/lib/api';
+import { FRONTEND_URLS } from '@/lib/constants';
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -181,7 +182,7 @@ export default function Products() {
                     )}
 
                     <Link
-                      href={`http://localhost:3001/products/${product.id}`}
+                      href={FRONTEND_URLS.productDetail(product.id)}
                       className="block w-full text-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors duration-300"
                     >
                       مشاهده جزئیات
@@ -196,7 +197,7 @@ export default function Products() {
         {products.length > 0 && (
           <div className="text-center mt-12">
             <Link
-              href="http://localhost:3001/products"
+              href={FRONTEND_URLS.products}
               className="inline-block px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors duration-300"
             >
               مشاهده همه محصولات

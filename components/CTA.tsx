@@ -10,7 +10,8 @@ export default function CTA() {
           آماده شروع هستید؟
         </h2>
         <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
-          همین حالا ثبت‌نام کنید و به بهترین استراتژی‌های معاملاتی دسترسی پیدا کنید
+          همین حالا ثبت‌نام کنید و به بهترین استراتژی‌های معاملاتی دسترسی پیدا
+          کنید
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
@@ -30,4 +31,3 @@ export default function CTA() {
     </section>
   );
 }
-

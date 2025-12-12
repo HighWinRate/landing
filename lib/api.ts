@@ -38,7 +38,7 @@ class ApiClient {
   private async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     console.log(`[API] Fetching: ${url}`);
-    
+
     try {
       const response = await fetch(url, {
         ...options,
@@ -48,8 +48,13 @@ class ApiClient {
         },
       });
 
-      console.log(`[API] Response status: ${response.status} ${response.statusText}`);
-      console.log(`[API] Response headers:`, Object.fromEntries(response.headers.entries()));
+      console.log(
+        `[API] Response status: ${response.status} ${response.statusText}`
+      );
+      console.log(
+        `[API] Response headers:`,
+        Object.fromEntries(response.headers.entries())
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -93,4 +98,3 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
-

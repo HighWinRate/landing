@@ -14,15 +14,21 @@ export default function Products() {
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching products from:', process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000');
+        console.log(
+          'Fetching products from:',
+          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+        );
         const data = await apiClient.getProducts();
         console.log('Products received:', data);
         // فقط محصولات فعال را نمایش بده
-        const activeProducts = data.filter(p => p.is_active !== false).slice(0, 6);
+        const activeProducts = data
+          .filter((p) => p.is_active !== false)
+          .slice(0, 6);
         console.log('Active products:', activeProducts);
         setProducts(activeProducts);
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'خطا در بارگذاری محصولات';
+        const errorMessage =
+          err instanceof Error ? err.message : 'خطا در بارگذاری محصولات';
         setError(errorMessage);
         console.error('Error fetching products:', err);
         console.error('Error details:', {
@@ -54,7 +60,9 @@ export default function Products() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">در حال بارگذاری...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">
+              در حال بارگذاری...
+            </p>
           </div>
         </div>
       </section>
@@ -65,7 +73,9 @@ export default function Products() {
     return (
       <section className="py-20 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-red-600 dark:text-red-400">{error}</div>
+          <div className="text-center text-red-600 dark:text-red-400">
+            {error}
+          </div>
         </div>
       </section>
     );
@@ -92,7 +102,9 @@ export default function Products() {
             {products.map((product) => {
               const thumbnailUrl = getThumbnailUrl(product);
               const finalPrice = product.discountedPrice || product.price;
-              const hasDiscount = product.discountedPrice && product.discountedPrice < product.price;
+              const hasDiscount =
+                product.discountedPrice &&
+                product.discountedPrice < product.price;
 
               return (
                 <div
@@ -162,7 +174,9 @@ export default function Products() {
 
                     {product.backtest_trades_count && (
                       <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        📊 {product.backtest_trades_count.toLocaleString('fa-IR')} معامله بکتست شده
+                        📊{' '}
+                        {product.backtest_trades_count.toLocaleString('fa-IR')}{' '}
+                        معامله بکتست شده
                       </div>
                     )}
 
@@ -193,4 +207,3 @@ export default function Products() {
     </section>
   );
 }
-

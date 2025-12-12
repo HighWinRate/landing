@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { FRONTEND_URLS } from '@/lib/constants';
+import { FRONTEND_URLS, BLOG_URLS } from '@/lib/constants';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +29,14 @@ export default function Navbar() {
             </Link>
             <Link href="#products" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
               محصولات
+            </Link>
+            <Link
+              href={BLOG_URLS.home}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+            >
+              وبلاگ
             </Link>
             <Link
               href={FRONTEND_URLS.login}
@@ -69,6 +77,14 @@ export default function Navbar() {
             </Link>
             <Link href="#products" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               محصولات
+            </Link>
+            <Link
+              href={BLOG_URLS.home}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600"
+            >
+              وبلاگ
             </Link>
             <Link href={FRONTEND_URLS.login} className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
               ورود

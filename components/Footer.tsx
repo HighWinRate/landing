@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FRONTEND_URLS } from '@/lib/constants';
+import { FRONTEND_URLS, BLOG_URLS } from '@/lib/constants';
 
 export default function Footer() {
   return (
@@ -19,6 +19,16 @@ export default function Footer() {
               <li>
                 <Link href={FRONTEND_URLS.products} className="hover:text-white transition-colors">
                   محصولات
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={BLOG_URLS.home}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white transition-colors"
+                >
+                  وبلاگ
                 </Link>
               </li>
               <li>

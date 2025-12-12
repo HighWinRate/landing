@@ -5,6 +5,11 @@ import { useState } from 'react';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  
+  // Note: Since Landing and Frontend are on different origins (ports 3003 and 3001),
+  // we can't directly check Frontend's localStorage. 
+  // The buttons will always be visible, but Frontend will handle the redirect
+  // if user tries to access /register while logged in.
 
   return (
     <nav className="fixed top-0 w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800">

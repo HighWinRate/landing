@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { FRONTEND_URLS } from '@/lib/constants';
 
 export default function Hero() {
   return (
@@ -30,7 +31,7 @@ export default function Hero() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href="/products"
+              href={FRONTEND_URLS.products}
               className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-lg shadow-lg hover:bg-primary-50 hover:text-primary-800 transition-all duration-300 transform hover:scale-105"
             >
               مشاهده محصولات

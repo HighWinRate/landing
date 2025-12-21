@@ -41,8 +41,26 @@ npm run dev
 فایل `.env` را ایجاد کنید و متغیرهای زیر را تنظیم کنید:
 
 ```env
+# Backend API URL
 NEXT_PUBLIC_API_URL=http://localhost:3000
+
+# Frontend URL (برای لینک‌های ورود/ثبت‌نام/محصولات)
+NEXT_PUBLIC_FRONTEND_URL=http://localhost:3001
+
+# Blog WordPress URL
+NEXT_PUBLIC_BLOG_URL=http://localhost:3004
 ```
+
+**⚠️ برای Production (Vercel/Deployment):**
+در Vercel یا platform deploy، این environment variables را تنظیم کنید:
+
+```env
+NEXT_PUBLIC_API_URL=https://api.highwinrate.com
+NEXT_PUBLIC_FRONTEND_URL=https://app.highwinrate.com
+NEXT_PUBLIC_BLOG_URL=https://blog.highwinrate.com
+```
+
+**نکته**: Landing page در `https://highwinrate.com` (بدون www) deploy می‌شود.
 
 ### پورت‌ها
 

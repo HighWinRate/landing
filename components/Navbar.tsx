@@ -1,16 +1,44 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FRONTEND_URLS, BLOG_URLS } from '@/lib/constants';
+import { supabase } from '@/lib/supabase';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  
-  // Note: Since Landing and Frontend are on different origins (ports 3003 and 3001),
-  // we can't directly check Frontend's localStorage. 
-  // The buttons will always be visible, but Frontend will handle the redirect
-  // if user tries to access /register while logged in.
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check authentication status
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsAuthenticated(!!session);
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // Determine the button href and text based on auth status
+  const authButtonHref = isAuthenticated ? FRONTEND_URLS.dashboard : FRONTEND_URLS.login;
+  const authButtonText = isAuthenticated ? 'داشبورد' : 'ورود';
 
   return (
     <nav className="fixed top-0 w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800">
@@ -38,18 +66,14 @@ export default function Navbar() {
             >
               وبلاگ
             </Link>
-            <Link
-              href={FRONTEND_URLS.login}
-              className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-            >
-              ورود
-            </Link>
-            <Link
-              href={FRONTEND_URLS.register}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-            >
-              ثبت‌نام
-            </Link>
+            {!isLoading && (
+              <Link
+                href={authButtonHref}
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                {authButtonText}
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -86,12 +110,15 @@ export default function Navbar() {
             >
               وبلاگ
             </Link>
-            <Link href={FRONTEND_URLS.login} className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
-              ورود
-            </Link>
-            <Link href={FRONTEND_URLS.register} className="block py-2 text-primary-600 font-semibold">
-              ثبت‌نام
-            </Link>
+            {!isLoading && (
+              <Link 
+                href={authButtonHref} 
+                className="block py-2 text-primary-600 font-semibold"
+                onClick={() => setIsOpen(false)}
+              >
+                {authButtonText}
+              </Link>
+            )}
           </div>
         )}
       </div>

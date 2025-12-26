@@ -5,9 +5,6 @@
 // Frontend URL from environment variable
 export const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3001';
 
-// Blog URL from environment variable
-export const BLOG_URL = process.env.NEXT_PUBLIC_BLOG_URL || 'http://localhost:3004';
-
 // Helper functions for building URLs
 export const getFrontendUrl = (path: string = '') => {
   const baseUrl = FRONTEND_URL.replace(/\/$/, ''); // Remove trailing slash
@@ -25,8 +22,9 @@ export const FRONTEND_URLS = {
   dashboard: getFrontendUrl('/dashboard'),
 } as const;
 
-// Blog URL
+// Blog URLs - استفاده از /blog برای SEO بهتر (Next.js Rewrite)
+// در production، Next.js rewrite این را به BLOG_URL (Ghost server) proxy می‌کند
 export const BLOG_URLS = {
-  home: BLOG_URL,
+  home: '/blog', // برای SEO بهتر، از /blog استفاده می‌کنیم (نه subdomain)
 } as const;
 

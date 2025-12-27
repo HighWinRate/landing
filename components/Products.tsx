@@ -61,7 +61,7 @@ export default function Products() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-background">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <Skeleton className="h-12 w-64 mx-auto mb-4" />
@@ -89,7 +89,7 @@ export default function Products() {
 
   if (error) {
     return (
-      <section className="py-20 bg-background">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center text-destructive">
             {error}
@@ -125,23 +125,23 @@ export default function Products() {
                 product.discountedPrice < product.price;
 
               return (
-                <Card key={product.id} className="overflow-hidden group">
+                <Card key={product.id}>
                   {thumbnailUrl ? (
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="h-48 overflow-hidden">
                       <img
                         src={thumbnailUrl}
                         alt={product.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        className="w-full h-full object-cover"
                       />
                       {hasDiscount && (
-                        <Badge className="absolute top-4 left-4 bg-destructive">
+                        <Badge className="bg-destructive">
                           تخفیف
                         </Badge>
                       )}
                     </div>
                   ) : (
-                    <div className="h-48 bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                      <span className="text-6xl opacity-50">📈</span>
+                    <div className="h-48 bg-muted flex items-center justify-center">
+                      <span className="text-6xl">📈</span>
                     </div>
                   )}
 

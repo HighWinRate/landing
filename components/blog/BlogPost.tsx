@@ -1,4 +1,4 @@
-import { PortableText } from '@portabletext/react';
+import { PortableText, PortableTextComponents } from '@portabletext/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { urlFor } from '@/lib/sanity';
@@ -38,6 +38,63 @@ interface Post {
 interface BlogPostProps {
   post: Post;
 }
+
+// Custom components for PortableText to ensure proper styling
+const portableTextComponents: PortableTextComponents = {
+  block: {
+    h1: ({ children }) => <h1 className="text-4xl font-bold mt-10 mb-6 text-foreground">{children}</h1>,
+    h2: ({ children }) => <h2 className="text-3xl font-bold mt-8 mb-4 text-foreground">{children}</h2>,
+    h3: ({ children }) => <h3 className="text-2xl font-semibold mt-6 mb-3 text-foreground">{children}</h3>,
+    h4: ({ children }) => <h4 className="text-xl font-semibold mt-4 mb-2 text-foreground">{children}</h4>,
+    h5: ({ children }) => <h5 className="text-lg font-semibold mt-4 mb-2 text-foreground">{children}</h5>,
+    h6: ({ children }) => <h6 className="text-base font-semibold mt-3 mb-2 text-foreground">{children}</h6>,
+    normal: ({ children }) => <p className="leading-relaxed mb-4 text-foreground">{children}</p>,
+    blockquote: ({ children }) => (
+      <blockquote className="border-r-4 border-primary pr-4 italic my-6 bg-muted/50 py-4 text-foreground">
+        {children}
+      </blockquote>
+    ),
+  },
+  marks: {
+    link: ({ children, value }) => {
+      const target = (value?.href || '').startsWith('http') ? '_blank' : undefined;
+      return (
+        <a
+          href={value?.href}
+          target={target}
+          rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+          className="text-primary no-underline hover:underline"
+        >
+          {children}
+        </a>
+      );
+    },
+    strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+  },
+  types: {
+    image: ({ value }) => {
+      if (!value?.asset) return null;
+      return (
+        <div className="relative w-full h-96 my-6 rounded-lg overflow-hidden shadow-lg">
+          <Image
+            src={urlFor(value).width(1200).url()}
+            alt={value.alt || 'Blog image'}
+            fill
+            className="object-cover"
+          />
+        </div>
+      );
+    },
+  },
+  list: {
+    bullet: ({ children }) => <ul className="list-disc my-4 pl-6 text-foreground">{children}</ul>,
+    number: ({ children }) => <ol className="list-decimal my-4 pl-6 text-foreground">{children}</ol>,
+  },
+  listItem: {
+    bullet: ({ children }) => <li className="my-2 text-foreground">{children}</li>,
+    number: ({ children }) => <li className="my-2 text-foreground">{children}</li>,
+  },
+};
 
 export default function BlogPost({ post }: BlogPostProps) {
   const publishedDate = post.publishedAt
@@ -121,25 +178,8 @@ export default function BlogPost({ post }: BlogPostProps) {
       )}
 
       <CardContent className="px-6 py-8">
-        <article className="prose prose-lg dark:prose-invert max-w-none 
-          prose-headings:font-bold prose-headings:mt-8 prose-headings:mb-4 prose-headings:text-foreground 
-          prose-h1:text-4xl prose-h1:font-bold prose-h1:mt-10 prose-h1:mb-6 
-          prose-h2:text-3xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 
-          prose-h3:text-2xl prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3 
-          prose-h4:text-xl prose-h4:font-semibold prose-h4:mt-4 prose-h4:mb-2 
-          prose-h5:text-lg prose-h5:font-semibold prose-h5:mt-4 prose-h5:mb-2 
-          prose-h6:text-base prose-h6:font-semibold prose-h6:mt-3 prose-h6:mb-2 
-          prose-p:leading-relaxed prose-p:mb-4 prose-p:text-foreground 
-          prose-a:text-primary prose-a:no-underline hover:prose-a:underline 
-          prose-strong:font-semibold prose-strong:text-foreground 
-          prose-ul:list-disc prose-ul:my-4 prose-ul:pl-6 
-          prose-ol:list-decimal prose-ol:my-4 prose-ol:pl-6 
-          prose-li:my-2 prose-li:text-foreground 
-          prose-img:rounded-lg prose-img:shadow-lg prose-img:my-6 
-          prose-blockquote:border-r-4 prose-blockquote:border-primary prose-blockquote:pr-4 prose-blockquote:italic prose-blockquote:my-6 prose-blockquote:bg-muted/50 prose-blockquote:py-4 
-          prose-code:text-sm prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded 
-          prose-pre:bg-muted prose-pre:p-4 prose-pre:rounded-lg">
-          <PortableText value={post.body} />
+        <article className="max-w-none">
+          <PortableText value={post.body} components={portableTextComponents} />
         </article>
       </CardContent>
 

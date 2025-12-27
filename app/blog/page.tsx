@@ -1,4 +1,4 @@
-import { client, postsQueryPaginated, postsCountQuery, isSanityConfigured } from '@/lib/sanity';
+import { clientNoCache, postsQueryPaginated, postsCountQuery, isSanityConfigured } from '@/lib/sanity';
 import BlogList from '@/components/blog/BlogList';
 import Pagination from '@/components/blog/Pagination';
 import type { Metadata } from 'next';
@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'وبلاگ | High Win Rate',
   description: 'مقالات و راهنماهای کاربردی در زمینه معاملات و استراتژی‌های معاملاتی',
 };
+
+// Force dynamic rendering to always get fresh data from Sanity
+export const dynamic = 'force-dynamic';
 
 const POSTS_PER_PAGE = 6;
 
@@ -19,8 +22,8 @@ async function getPosts(page: number = 1) {
     const end = start + POSTS_PER_PAGE;
     
     const [posts, total] = await Promise.all([
-      client.fetch(postsQueryPaginated, { start, end }),
-      client.fetch(postsCountQuery),
+      clientNoCache.fetch(postsQueryPaginated, { start, end }),
+      clientNoCache.fetch(postsCountQuery),
     ]);
     
     return { posts, total };

@@ -14,6 +14,15 @@ export const client = createClient({
   token: process.env.SANITY_API_READ_TOKEN, // Optional: for authenticated requests
 });
 
+// Client without CDN for fresh data (used in blog pages with force-dynamic)
+export const clientNoCache = createClient({
+  projectId: projectId || 'placeholder',
+  dataset: dataset,
+  useCdn: false, // No CDN cache for fresh data
+  apiVersion: '2024-01-01',
+  token: process.env.SANITY_API_READ_TOKEN,
+});
+
 // Helper to check if Sanity is configured
 export const isSanityConfigured = () => {
   return !!projectId && projectId !== 'placeholder';

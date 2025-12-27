@@ -121,7 +121,24 @@ export default function BlogPost({ post }: BlogPostProps) {
       )}
 
       <CardContent className="px-6 py-8">
-        <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:mt-8 prose-headings:mb-4 prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-relaxed prose-p:mb-4 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:font-semibold prose-ul:list-disc prose-ol:list-decimal prose-li:my-2 prose-img:rounded-lg prose-img:shadow-lg prose-blockquote:border-r-4 prose-blockquote:border-primary prose-blockquote:pr-4 prose-blockquote:italic">
+        <article className="prose prose-lg dark:prose-invert max-w-none 
+          prose-headings:font-bold prose-headings:mt-8 prose-headings:mb-4 prose-headings:text-foreground 
+          prose-h1:text-4xl prose-h1:font-bold prose-h1:mt-10 prose-h1:mb-6 
+          prose-h2:text-3xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 
+          prose-h3:text-2xl prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3 
+          prose-h4:text-xl prose-h4:font-semibold prose-h4:mt-4 prose-h4:mb-2 
+          prose-h5:text-lg prose-h5:font-semibold prose-h5:mt-4 prose-h5:mb-2 
+          prose-h6:text-base prose-h6:font-semibold prose-h6:mt-3 prose-h6:mb-2 
+          prose-p:leading-relaxed prose-p:mb-4 prose-p:text-foreground 
+          prose-a:text-primary prose-a:no-underline hover:prose-a:underline 
+          prose-strong:font-semibold prose-strong:text-foreground 
+          prose-ul:list-disc prose-ul:my-4 prose-ul:pl-6 
+          prose-ol:list-decimal prose-ol:my-4 prose-ol:pl-6 
+          prose-li:my-2 prose-li:text-foreground 
+          prose-img:rounded-lg prose-img:shadow-lg prose-img:my-6 
+          prose-blockquote:border-r-4 prose-blockquote:border-primary prose-blockquote:pr-4 prose-blockquote:italic prose-blockquote:my-6 prose-blockquote:bg-muted/50 prose-blockquote:py-4 
+          prose-code:text-sm prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded 
+          prose-pre:bg-muted prose-pre:p-4 prose-pre:rounded-lg">
           <PortableText value={post.body} />
         </article>
       </CardContent>

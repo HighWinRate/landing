@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { FRONTEND_URLS, BLOG_URLS } from '@/lib/constants';
 import { supabase } from '@/lib/supabase';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +52,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8 space-x-reverse">
+          <div className="hidden md:flex items-center space-x-4 space-x-reverse">
             <Link href="#features" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
               ویژگی‌ها
             </Link>
@@ -64,6 +65,7 @@ export default function Navbar() {
             >
               وبلاگ
             </Link>
+            <ThemeToggle />
             {!isLoading && (
               <Link
                 href={authButtonHref}
@@ -106,10 +108,14 @@ export default function Navbar() {
             >
               وبلاگ
             </Link>
+            <div className="flex items-center justify-between py-2">
+              <span className="text-gray-700 dark:text-gray-300">تم:</span>
+              <ThemeToggle />
+            </div>
             {!isLoading && (
               <Link 
                 href={authButtonHref} 
-                className="block py-2 text-primary-600 font-semibold"
+                className="block py-2 text-primary-600 dark:text-primary-400 font-semibold"
                 onClick={() => setIsOpen(false)}
               >
                 {authButtonText}

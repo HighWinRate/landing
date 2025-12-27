@@ -25,7 +25,7 @@ const config: Config = {
     },
   },
   plugins: [],
-  darkMode: 'media',
+  darkMode: 'class', // Use class-based dark mode for better control
 };
 
 export default config;

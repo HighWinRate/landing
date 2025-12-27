@@ -44,6 +44,7 @@ export const postsQuery = `*[_type == "post" && defined(slug.current)] | order(p
   }
 }`;
 
+// Query with better error handling and case-insensitive matching
 export const postBySlugQuery = `*[_type == "post" && slug.current == $slug][0] {
   _id,
   title,

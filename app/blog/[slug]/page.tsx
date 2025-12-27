@@ -13,13 +13,37 @@ type Props = {
 
 async function getPost(slug: string) {
   if (!isSanityConfigured()) {
+    console.error('❌ Sanity is not configured');
     return null;
   }
   try {
-    const post = await client.fetch(postBySlugQuery, { slug });
+    console.log('🔍 Fetching post with slug:', slug);
+    
+    // Try exact match first
+    let post = await client.fetch(postBySlugQuery, { slug });
+    
+    if (!post) {
+      console.warn('⚠️ No post found with exact slug match, trying alternative query...');
+      // Try alternative query format
+      const altQuery = `*[_type == "post" && slug.current == "${slug}"][0]`;
+      post = await client.fetch(altQuery);
+    }
+    
+    if (!post) {
+      console.warn('⚠️ No post found with slug:', slug);
+      // Try to find all posts to see what slugs exist
+      const allPosts = await client.fetch(`*[_type == "post"] { slug, title }`);
+      console.log('📋 All available posts:', allPosts.map((p: any) => ({ 
+        slug: p.slug?.current || p.slug, 
+        title: p.title 
+      })));
+    } else {
+      console.log('✅ Post found:', post.title);
+    }
+    
     return post;
   } catch (error) {
-    console.error('Failed to fetch post:', error);
+    console.error('❌ Failed to fetch post:', error);
     return null;
   }
 }
@@ -30,9 +54,25 @@ export async function generateStaticParams() {
   }
   try {
     const slugs = await client.fetch(postSlugsQuery);
-    return slugs.map((item: { slug: string }) => ({
-      slug: item.slug,
-    }));
+    console.log('📋 generateStaticParams - Found slugs:', JSON.stringify(slugs, null, 2));
+    
+    const params = slugs.map((item: any) => {
+      // Handle both formats: { slug: "value" } or { slug: { current: "value" } }
+      let slugValue: string;
+      if (typeof item.slug === 'string') {
+        slugValue = item.slug;
+      } else if (item.slug?.current) {
+        slugValue = item.slug.current;
+      } else {
+        console.warn('⚠️ Invalid slug format:', item);
+        return null;
+      }
+      console.log('📋 Mapping slug:', slugValue);
+      return { slug: slugValue };
+    }).filter(Boolean);
+    
+    console.log('📋 generateStaticParams - Returning params:', params);
+    return params;
   } catch (error) {
     // If Sanity is not configured or no posts exist, return empty array
     console.warn('Failed to fetch post slugs:', error);
@@ -134,15 +174,22 @@ async function getRelatedPosts(currentPost: any) {
 export default async function PostPage({ params }: Props) {
   const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
   
+  console.log('📄 PostPage called with params:', params);
+  console.log('📄 Extracted slug:', slug);
+  
   if (!slug) {
+    console.error('❌ No slug provided');
     notFound();
   }
   
   const post = await getPost(slug);
 
   if (!post) {
+    console.error('❌ Post not found, calling notFound()');
     notFound();
   }
+  
+  console.log('✅ Rendering post:', post.title);
 
   const relatedPosts = await getRelatedPosts(post);
 

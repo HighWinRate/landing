@@ -6,7 +6,8 @@
     "dev": "next dev -p 3003",
     "build": "next build",
     "start": "next start -p 3003",
-    "lint": "eslint"
+    "lint": "eslint",
+    "studio": "cd sanity && sanity dev -p 3333"
   },
   "dependencies": {
     "@portabletext/react": "^3.0.0",
@@ -19,12 +20,14 @@
     "react-dom": "19.2.0"
   },
   "devDependencies": {
+    "@sanity/vision": "^3.0.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "sanity": "^3.0.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -22,8 +22,8 @@ export const FRONTEND_URLS = {
   dashboard: getFrontendUrl('/dashboard'),
 } as const;
 
-// Blog URLs - Blog is now a standalone Next.js app
+// Blog URLs - Blog is now integrated in landing (monorepo)
 export const BLOG_URLS = {
-  home: process.env.NEXT_PUBLIC_BLOG_URL || 'http://localhost:3004',
+  home: '/blog', // Internal route - better for SEO
 } as const;
 

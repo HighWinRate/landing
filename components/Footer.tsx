@@ -1,41 +1,42 @@
 import Link from 'next/link';
 import { FRONTEND_URLS, BLOG_URLS } from '@/lib/constants';
+import { Separator } from '@/components/ui/separator';
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-800 dark:bg-gray-900 text-gray-200 dark:text-gray-300 py-12">
+    <footer className="bg-muted py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-white dark:text-white text-xl font-bold mb-4">High Win Rate</h3>
-            <p className="text-gray-300 dark:text-gray-400">
+            <h3 className="text-xl font-bold mb-4">High Win Rate</h3>
+            <p className="text-muted-foreground">
               فروشگاه آنلاین استراتژی‌های معاملاتی با نرخ برد بالا
             </p>
           </div>
 
           <div>
-            <h4 className="text-white dark:text-white font-semibold mb-4">لینک‌های مفید</h4>
+            <h4 className="font-semibold mb-4">لینک‌های مفید</h4>
             <ul className="space-y-2">
               <li>
-                <Link href={FRONTEND_URLS.products} className="hover:text-white transition-colors">
+                <Link href={FRONTEND_URLS.products} className="text-muted-foreground hover:text-foreground transition-colors">
                   محصولات
                 </Link>
               </li>
               <li>
                 <Link
                   href={BLOG_URLS.home}
-                  className="hover:text-white transition-colors"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   وبلاگ
                 </Link>
               </li>
               <li>
-                <Link href={FRONTEND_URLS.login} className="hover:text-white transition-colors">
+                <Link href={FRONTEND_URLS.login} className="text-muted-foreground hover:text-foreground transition-colors">
                   ورود
                 </Link>
               </li>
               <li>
-                <Link href={FRONTEND_URLS.register} className="hover:text-white transition-colors">
+                <Link href={FRONTEND_URLS.register} className="text-muted-foreground hover:text-foreground transition-colors">
                   ثبت‌نام
                 </Link>
               </li>
@@ -43,20 +44,20 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white dark:text-white font-semibold mb-4">پشتیبانی</h4>
+            <h4 className="font-semibold mb-4">پشتیبانی</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   تماس با ما
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   سوالات متداول
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   راهنما
                 </a>
               </li>
@@ -64,15 +65,16 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white dark:text-white font-semibold mb-4">تماس با ما</h4>
-            <ul className="space-y-2 text-gray-300 dark:text-gray-400">
+            <h4 className="font-semibold mb-4">تماس با ما</h4>
+            <ul className="space-y-2 text-muted-foreground">
               <li>📧 info@highwinrate.com</li>
               <li>📱 +98 912 345 6789</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 dark:border-gray-800 mt-8 pt-8 text-center text-gray-300 dark:text-gray-400">
+        <Separator className="my-8" />
+        <div className="text-center text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} High Win Rate. تمام حقوق محفوظ است.</p>
         </div>
       </div>

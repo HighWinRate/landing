@@ -1,13 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FRONTEND_URLS, BLOG_URLS } from '@/lib/constants';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from './ThemeToggle';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,87 +50,80 @@ export default function Navbar() {
   const authButtonText = isAuthenticated ? 'داشبورد' : 'ورود';
 
   return (
-    <nav className="fixed top-0 w-full backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800 navbar-bg">
+    <nav className="fixed top-0 w-full backdrop-blur-sm z-50 border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+            <Link href="/" className="text-2xl font-bold text-primary">
               High Win Rate
             </Link>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-4 space-x-reverse">
-            <Link href="#features" className="text-gray-900 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="#features" className="text-foreground hover:text-primary transition-colors font-medium">
               ویژگی‌ها
             </Link>
-            <Link href="#products" className="text-gray-900 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
+            <Link href="#products" className="text-foreground hover:text-primary transition-colors font-medium">
               محصولات
             </Link>
             <Link
               href={BLOG_URLS.home}
-              className="text-gray-900 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
+              className="text-foreground hover:text-primary transition-colors font-medium"
             >
               وبلاگ
             </Link>
             <ThemeToggle />
             {!isLoading && (
-              <Link
-                href={authButtonHref}
-                className="px-4 py-2 bg-primary-700 dark:bg-primary-500 text-white rounded-lg hover:bg-primary-800 dark:hover:bg-primary-600 transition-colors font-medium shadow-lg login-button"
-              >
-                {authButtonText}
-              </Link>
+              <Button asChild>
+                <Link href={authButtonHref}>
+                  {authButtonText}
+                </Link>
+              </Button>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu */}
           <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-900 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400"
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                {isOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <SheetHeader>
+                  <SheetTitle>منو</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-4 mt-6">
+                  <Link href="#features" className="text-foreground hover:text-primary transition-colors font-medium">
+                    ویژگی‌ها
+                  </Link>
+                  <Link href="#products" className="text-foreground hover:text-primary transition-colors font-medium">
+                    محصولات
+                  </Link>
+                  <Link
+                    href={BLOG_URLS.home}
+                    className="text-foreground hover:text-primary transition-colors font-medium"
+                  >
+                    وبلاگ
+                  </Link>
+                  <div className="flex items-center justify-between">
+                    <span className="text-foreground font-medium">تم:</span>
+                    <ThemeToggle />
+                  </div>
+                  {!isLoading && (
+                    <Button asChild className="w-full">
+                      <Link href={authButtonHref}>
+                        {authButtonText}
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {isOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800">
-            <Link href="#features" className="block py-2 text-gray-900 dark:text-gray-300 hover:text-primary-600 font-medium">
-              ویژگی‌ها
-            </Link>
-            <Link href="#products" className="block py-2 text-gray-900 dark:text-gray-300 hover:text-primary-600 font-medium">
-              محصولات
-            </Link>
-            <Link
-              href={BLOG_URLS.home}
-              className="block py-2 text-gray-900 dark:text-gray-300 hover:text-primary-600 font-medium"
-            >
-              وبلاگ
-            </Link>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-gray-900 dark:text-gray-300 font-medium">تم:</span>
-              <ThemeToggle />
-            </div>
-            {!isLoading && (
-              <Link 
-                href={authButtonHref} 
-                className="block py-2 text-primary-600 dark:text-primary-400 font-semibold"
-                onClick={() => setIsOpen(false)}
-              >
-                {authButtonText}
-              </Link>
-            )}
-          </div>
-        )}
       </div>
     </nav>
   );

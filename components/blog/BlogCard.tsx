@@ -2,6 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { urlFor } from '@/lib/sanity';
 import { format } from 'date-fns';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface Post {
   _id: string;
@@ -32,23 +34,25 @@ export default function BlogCard({ post }: BlogCardProps) {
 
   return (
     <Link href={`/blog/${post.slug.current}`}>
-      <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+      <Card className="h-full flex flex-col hover:shadow-lg transition-shadow">
         {post.mainImage && (
           <div className="relative w-full h-48">
             <Image
               src={urlFor(post.mainImage).width(600).height(300).url()}
               alt={post.title}
               fill
-              className="object-cover"
+              className="object-cover rounded-t-lg"
             />
           </div>
         )}
-        <div className="p-6 flex-1 flex flex-col">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+        <CardHeader>
+          <CardTitle className="line-clamp-2">
             {post.title}
-          </h2>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 flex flex-col">
           {post.excerpt && (
-            <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 flex-1">
+            <p className="text-muted-foreground mb-4 line-clamp-3 flex-1">
               {post.excerpt}
             </p>
           )}
@@ -59,19 +63,20 @@ export default function BlogCard({ post }: BlogCardProps) {
                   <Link
                     key={category.slug.current}
                     href={`/blog/category/${category.slug.current}`}
-                    className="text-xs bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 px-2 py-1 rounded"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {category.title}
+                    <Badge variant="secondary" className="text-xs">
+                      {category.title}
+                    </Badge>
                   </Link>
                 ))}
               </div>
             )}
-            <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
               {post.author && (
                 <Link
                   href={`/blog/author/${post.author.slug.current}`}
-                  className="hover:text-primary-600 dark:hover:text-primary-400"
+                  className="hover:text-foreground transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {post.author.name}
@@ -80,8 +85,8 @@ export default function BlogCard({ post }: BlogCardProps) {
               {publishedDate && <span>{publishedDate}</span>}
             </div>
           </div>
-        </div>
-      </article>
+        </CardContent>
+      </Card>
     </Link>
   );
 }

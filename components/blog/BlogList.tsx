@@ -26,7 +26,7 @@ export default function BlogList({ posts }: BlogListProps) {
   if (posts.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-600 dark:text-gray-400 text-lg">
+        <p className="text-muted-foreground text-lg">
           هنوز پستی منتشر نشده است.
         </p>
       </div>

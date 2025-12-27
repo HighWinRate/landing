@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { apiClient, Product } from '@/lib/api';
 import { FRONTEND_URLS } from '@/lib/constants';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -57,13 +61,26 @@ export default function Products() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">
-              در حال بارگذاری...
-            </p>
+          <div className="text-center mb-16">
+            <Skeleton className="h-12 w-64 mx-auto mb-4" />
+            <Skeleton className="h-6 w-96 mx-auto" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, i) => (
+              <Card key={i}>
+                <Skeleton className="h-48 w-full" />
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-full" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-8 w-1/2 mb-4" />
+                  <Skeleton className="h-10 w-full" />
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -72,9 +89,9 @@ export default function Products() {
 
   if (error) {
     return (
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-red-600 dark:text-red-400">
+          <div className="text-center text-destructive">
             {error}
           </div>
         </div>
@@ -83,19 +100,19 @@ export default function Products() {
   }
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
+    <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
             محصولات محبوب
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             بهترین استراتژی‌های معاملاتی با بالاترین نرخ برد
           </p>
         </div>
 
         {products.length === 0 ? (
-          <div className="text-center text-gray-600 dark:text-gray-400">
+          <div className="text-center text-muted-foreground">
             محصولی یافت نشد
           </div>
         ) : (
@@ -108,10 +125,7 @@ export default function Products() {
                 product.discountedPrice < product.price;
 
               return (
-                <div
-                  key={product.id}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 group"
-                >
+                <Card key={product.id} className="overflow-hidden group">
                   {thumbnailUrl ? (
                     <div className="relative h-48 overflow-hidden">
                       <img
@@ -120,37 +134,38 @@ export default function Products() {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                       {hasDiscount && (
-                        <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        <Badge className="absolute top-4 left-4 bg-destructive">
                           تخفیف
-                        </div>
+                        </Badge>
                       )}
                     </div>
                   ) : (
-                    <div className="h-48 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                      <span className="text-6xl text-white opacity-50">📈</span>
+                    <div className="h-48 bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                      <span className="text-6xl opacity-50">📈</span>
                     </div>
                   )}
 
-                  <div className="p-6">
+                  <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       {product.category && (
-                        <span className="text-sm text-primary-600 dark:text-primary-400 font-medium">
+                        <Badge variant="secondary">
                           {product.category.name}
-                        </span>
+                        </Badge>
                       )}
                       <div className="flex items-center gap-1">
                         <span className="text-yellow-500">⭐</span>
-                        <span className="font-bold text-gray-900 dark:text-white">
+                        <span className="font-bold">
                           {product.winrate.toFixed(1)}%
                         </span>
                       </div>
                     </div>
-
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                    <CardTitle className="line-clamp-2">
                       {product.title}
-                    </h3>
+                    </CardTitle>
+                  </CardHeader>
 
-                    <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2 text-sm">
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4 line-clamp-2 text-sm">
                       {product.description}
                     </p>
 
@@ -158,15 +173,15 @@ export default function Products() {
                       <div className="flex items-center gap-2">
                         {hasDiscount ? (
                           <>
-                            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <span className="text-2xl font-bold">
                               {formatPrice(finalPrice)} تومان
                             </span>
-                            <span className="text-sm text-gray-500 line-through">
+                            <span className="text-sm text-muted-foreground line-through">
                               {formatPrice(product.price)}
                             </span>
                           </>
                         ) : (
-                          <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                          <span className="text-2xl font-bold">
                             {formatPrice(product.price)} تومان
                           </span>
                         )}
@@ -174,21 +189,20 @@ export default function Products() {
                     </div>
 
                     {product.backtest_trades_count && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      <div className="text-sm text-muted-foreground mb-4">
                         📊{' '}
                         {product.backtest_trades_count.toLocaleString('fa-IR')}{' '}
                         معامله بکتست شده
                       </div>
                     )}
 
-                    <Link
-                      href={FRONTEND_URLS.productDetail(product.id)}
-                      className="block w-full text-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors duration-300"
-                    >
-                      مشاهده جزئیات
-                    </Link>
-                  </div>
-                </div>
+                    <Button asChild className="w-full">
+                      <Link href={FRONTEND_URLS.productDetail(product.id)}>
+                        مشاهده جزئیات
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
@@ -196,12 +210,11 @@ export default function Products() {
 
         {products.length > 0 && (
           <div className="text-center mt-12">
-            <Link
-              href={FRONTEND_URLS.products}
-              className="inline-block px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors duration-300"
-            >
-              مشاهده همه محصولات
-            </Link>
+            <Button asChild size="lg">
+              <Link href={FRONTEND_URLS.products}>
+                مشاهده همه محصولات
+              </Link>
+            </Button>
           </div>
         )}
       </div>

@@ -60,9 +60,9 @@ export default async function AuthorPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 mb-12">
+        <div className="bg-card rounded-lg shadow-lg p-8 mb-12">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             {author.image && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden flex-shrink-0">
@@ -75,7 +75,7 @@ export default async function AuthorPage({ params }: Props) {
               </div>
             )}
             <div className="flex-1 text-center md:text-right">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              <h1 className="text-3xl font-bold mb-4">
                 {author.name}
               </h1>
               {author.bio && (
@@ -90,7 +90,7 @@ export default async function AuthorPage({ params }: Props) {
                       href={author.socialLinks.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 hover:text-blue-600"
+                      className="text-primary hover:underline"
                     >
                       Twitter
                     </a>
@@ -100,7 +100,7 @@ export default async function AuthorPage({ params }: Props) {
                       href={author.socialLinks.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700"
+                      className="text-primary hover:underline"
                     >
                       LinkedIn
                     </a>
@@ -110,7 +110,7 @@ export default async function AuthorPage({ params }: Props) {
                       href={author.socialLinks.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                      className="text-primary hover:underline"
                     >
                       GitHub
                     </a>
@@ -121,7 +121,7 @@ export default async function AuthorPage({ params }: Props) {
           </div>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          <h2 className="text-2xl font-bold mb-6">
             مقالات {author.name}
           </h2>
           <BlogList posts={posts} />

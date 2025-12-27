@@ -4,6 +4,9 @@ import RelatedPosts from '@/components/blog/RelatedPosts';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
+// Enable dynamic rendering for new posts (render at request time)
+export const dynamic = 'force-dynamic';
+
 type Props = {
   params: { slug: string };
 };

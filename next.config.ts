@@ -11,10 +11,8 @@ const nextConfig: NextConfig = {
     ],
   },
   // Exclude sanity folder from Next.js build
-  experimental: {
-    outputFileTracingExcludes: {
-      '*': ['./sanity/**/*'],
-    },
+  outputFileTracingExcludes: {
+    '*': ['./sanity/**/*'],
   },
 };
 

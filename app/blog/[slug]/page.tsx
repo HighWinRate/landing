@@ -2,6 +2,8 @@ import { client, postBySlugQuery, postSlugsQuery, relatedPostsQuery, isSanityCon
 import BlogPost from '@/components/blog/BlogPost';
 import RelatedPosts from '@/components/blog/RelatedPosts';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import type { Metadata } from 'next';
 
 // Enable dynamic rendering for new posts (render at request time)
@@ -13,37 +15,13 @@ type Props = {
 
 async function getPost(slug: string) {
   if (!isSanityConfigured()) {
-    console.error('❌ Sanity is not configured');
     return null;
   }
   try {
-    console.log('🔍 Fetching post with slug:', slug);
-    
-    // Try exact match first
-    let post = await client.fetch(postBySlugQuery, { slug });
-    
-    if (!post) {
-      console.warn('⚠️ No post found with exact slug match, trying alternative query...');
-      // Try alternative query format
-      const altQuery = `*[_type == "post" && slug.current == "${slug}"][0]`;
-      post = await client.fetch(altQuery);
-    }
-    
-    if (!post) {
-      console.warn('⚠️ No post found with slug:', slug);
-      // Try to find all posts to see what slugs exist
-      const allPosts = await client.fetch(`*[_type == "post"] { slug, title }`);
-      console.log('📋 All available posts:', allPosts.map((p: any) => ({ 
-        slug: p.slug?.current || p.slug, 
-        title: p.title 
-      })));
-    } else {
-      console.log('✅ Post found:', post.title);
-    }
-    
+    const post = await client.fetch(postBySlugQuery, { slug });
     return post;
   } catch (error) {
-    console.error('❌ Failed to fetch post:', error);
+    console.error('Failed to fetch post:', error);
     return null;
   }
 }
@@ -54,27 +32,11 @@ export async function generateStaticParams() {
   }
   try {
     const slugs = await client.fetch(postSlugsQuery);
-    console.log('📋 generateStaticParams - Found slugs:', JSON.stringify(slugs, null, 2));
-    
-    const params = slugs.map((item: any) => {
-      // Handle both formats: { slug: "value" } or { slug: { current: "value" } }
-      let slugValue: string;
-      if (typeof item.slug === 'string') {
-        slugValue = item.slug;
-      } else if (item.slug?.current) {
-        slugValue = item.slug.current;
-      } else {
-        console.warn('⚠️ Invalid slug format:', item);
-        return null;
-      }
-      console.log('📋 Mapping slug:', slugValue);
+    return slugs.map((item: any) => {
+      const slugValue = typeof item.slug === 'string' ? item.slug : item.slug?.current || '';
       return { slug: slugValue };
-    }).filter(Boolean);
-    
-    console.log('📋 generateStaticParams - Returning params:', params);
-    return params;
+    }).filter((p: any) => p.slug);
   } catch (error) {
-    // If Sanity is not configured or no posts exist, return empty array
     console.warn('Failed to fetch post slugs:', error);
     return [];
   }
@@ -173,36 +135,41 @@ async function getRelatedPosts(currentPost: any) {
 }
 
 export default async function PostPage({ params }: Props) {
-  // In Next.js 15, params is a Promise and must be awaited
   const resolvedParams = await params;
   const slug = typeof resolvedParams.slug === 'string' ? resolvedParams.slug : resolvedParams.slug?.[0] || '';
   
-  console.log('📄 PostPage called with params:', resolvedParams);
-  console.log('📄 Extracted slug:', slug);
-  
   if (!slug) {
-    console.error('❌ No slug provided');
     notFound();
   }
   
   const post = await getPost(slug);
 
   if (!post) {
-    console.error('❌ Post not found, calling notFound()');
     notFound();
   }
-  
-  console.log('✅ Rendering post:', post.title);
 
   const relatedPosts = await getRelatedPosts(post);
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <BackButton />
         <BlogPost post={post} />
         {relatedPosts.length > 0 && <RelatedPosts posts={relatedPosts} />}
       </div>
     </div>
+  );
+}
+
+function BackButton() {
+  return (
+    <Link 
+      href="/blog"
+      className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+    >
+      <ArrowRight className="h-4 w-4" />
+      بازگشت به بلاگ
+    </Link>
   );
 }
 

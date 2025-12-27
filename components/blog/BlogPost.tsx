@@ -47,66 +47,75 @@ export default function BlogPost({ post }: BlogPostProps) {
   const readingTimeText = formatReadingTime(readingTime);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-4xl mb-4 leading-tight">
-          {post.title}
-        </CardTitle>
-        {post.excerpt && (
-          <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
-            {post.excerpt}
-          </p>
-        )}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-          {post.author && (
-            <Link
-              href={`/blog/author/${post.author.slug.current}`}
-              className="flex items-center gap-2 hover:text-foreground transition-colors"
-            >
-              {post.author.image && (
-                <div className="relative w-8 h-8 rounded-full overflow-hidden">
-                  <Image
-                    src={urlFor(post.author.image).width(32).height(32).url()}
-                    alt={post.author.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
-              <span>{post.author.name}</span>
-            </Link>
+    <article>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-4xl mb-4 leading-tight">
+            {post.title}
+          </CardTitle>
+          {post.excerpt && (
+            <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
+              {post.excerpt}
+            </p>
           )}
-          {publishedDate && <span>•</span>}
-          {publishedDate && <span>{publishedDate}</span>}
-          <span>•</span>
-          <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
-            <span>{readingTimeText} مطالعه</span>
-          </div>
-        </div>
-        {post.categories && post.categories.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-4">
-            {post.categories.map((category) => (
+          
+          {/* اطلاعات پست */}
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-4">
+            {post.author && (
               <Link
-                key={category.slug.current}
-                href={`/blog/category/${category.slug.current}`}
+                href={`/blog/author/${post.author.slug.current}`}
+                className="flex items-center gap-2 hover:text-foreground transition-colors"
               >
-                <Badge variant="secondary">
-                  {category.title}
-                </Badge>
+                {post.author.image && (
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden border border-border">
+                    <Image
+                      src={urlFor(post.author.image).width(32).height(32).url()}
+                      alt={post.author.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <span className="font-medium">{post.author.name}</span>
               </Link>
-            ))}
+            )}
+            {publishedDate && (
+              <>
+                <span className="text-muted-foreground/50">•</span>
+                <time dateTime={post.publishedAt}>{publishedDate}</time>
+              </>
+            )}
+            <span className="text-muted-foreground/50">•</span>
+            <div className="flex items-center gap-1">
+              <Clock className="h-4 w-4" />
+              <span>{readingTimeText} مطالعه</span>
+            </div>
           </div>
-        )}
-      </CardHeader>
+
+          {/* دسته‌بندی‌ها */}
+          {post.categories && post.categories.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {post.categories.map((category) => (
+                <Link
+                  key={category.slug.current}
+                  href={`/blog/category/${category.slug.current}`}
+                >
+                  <Badge variant="secondary" className="hover:bg-secondary/80 transition-colors">
+                    {category.title}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          )}
+        </CardHeader>
 
       {post.mainImage && (
-        <div className="relative w-full h-96">
+        <div className="relative w-full h-96 mb-6">
           <Image
             src={urlFor(post.mainImage).width(1200).height(600).url()}
             alt={post.title}
             fill
-            className="object-cover"
+            className="object-cover rounded-lg"
           />
         </div>
       )}
@@ -119,11 +128,11 @@ export default function BlogPost({ post }: BlogPostProps) {
 
       {post.author && (
         <>
-          <Separator />
-          <CardContent className="px-6 py-8 bg-muted/50">
+          <Separator className="my-6" />
+          <CardContent className="px-6 py-6">
             <div className="flex items-start gap-4">
               {post.author.image && (
-                <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-border">
                   <Image
                     src={urlFor(post.author.image).width(64).height(64).url()}
                     alt={post.author.name}
@@ -133,14 +142,16 @@ export default function BlogPost({ post }: BlogPostProps) {
                 </div>
               )}
               <div className="flex-1">
-                <Link
-                  href={`/blog/author/${post.author.slug.current}`}
-                  className="text-lg font-semibold hover:text-primary transition-colors"
-                >
-                  {post.author.name}
-                </Link>
+                <div className="flex items-center gap-2 mb-2">
+                  <Link
+                    href={`/blog/author/${post.author.slug.current}`}
+                    className="text-lg font-semibold hover:text-primary transition-colors"
+                  >
+                    {post.author.name}
+                  </Link>
+                </div>
                 {post.author.bio && (
-                  <div className="mt-2 prose prose-sm dark:prose-invert max-w-none">
+                  <div className="mt-2 text-sm text-muted-foreground prose prose-sm dark:prose-invert max-w-none">
                     <PortableText value={post.author.bio} />
                   </div>
                 )}
@@ -151,7 +162,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                         href={post.author.socialLinks.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:underline"
+                        className="text-sm text-primary hover:underline"
                       >
                         Twitter
                       </a>
@@ -161,7 +172,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                         href={post.author.socialLinks.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:underline"
+                        className="text-sm text-primary hover:underline"
                       >
                         LinkedIn
                       </a>
@@ -171,7 +182,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                         href={post.author.socialLinks.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:underline"
+                        className="text-sm text-primary hover:underline"
                       >
                         GitHub
                       </a>
@@ -183,7 +194,8 @@ export default function BlogPost({ post }: BlogPostProps) {
           </CardContent>
         </>
       )}
-    </Card>
+      </Card>
+    </article>
   );
 }
 

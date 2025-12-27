@@ -36,14 +36,14 @@ export default function BlogCard({ post }: BlogCardProps) {
 
   return (
     <Link href={`/blog/${post.slug.current}`}>
-      <Card className="h-full flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group">
+      <Card className="h-full flex flex-col hover:shadow-lg transition-shadow group">
         {post.mainImage && (
-          <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
+          <div className="relative w-full h-48 overflow-hidden">
             <Image
               src={urlFor(post.mainImage).width(600).height(300).url()}
               alt={post.title}
               fill
-              className="object-cover group-hover:scale-110 transition-transform duration-300"
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
         )}
@@ -54,7 +54,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         </CardHeader>
         <CardContent className="flex-1 flex flex-col">
           {post.excerpt && (
-            <p className="text-muted-foreground mb-4 line-clamp-3 flex-1 text-sm leading-relaxed">
+            <p className="text-muted-foreground mb-4 line-clamp-3 flex-1 text-sm">
               {post.excerpt}
             </p>
           )}
@@ -67,26 +67,24 @@ export default function BlogCard({ post }: BlogCardProps) {
                     href={`/blog/category/${category.slug.current}`}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Badge variant="secondary" className="text-xs hover:bg-primary hover:text-primary-foreground transition-colors">
+                    <Badge variant="secondary" className="text-xs">
                       {category.title}
                     </Badge>
                   </Link>
                 ))}
               </div>
             )}
-            <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border">
+            <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
               {post.author && (
                 <Link
                   href={`/blog/author/${post.author.slug.current}`}
-                  className="hover:text-foreground transition-colors font-medium"
+                  className="hover:text-foreground transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {post.author.name}
                 </Link>
               )}
-              {publishedDate && (
-                <span className="text-muted-foreground/70">{publishedDate}</span>
-              )}
+              {publishedDate && <span>{publishedDate}</span>}
             </div>
           </div>
         </CardContent>

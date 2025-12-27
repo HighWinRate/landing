@@ -13,17 +13,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Menu } from 'lucide-react';
 
 export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check authentication status
     const checkAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         setIsAuthenticated(!!session);
       } catch (error) {
         console.error('Error checking auth:', error);
@@ -35,8 +35,9 @@ export default function Navbar() {
 
     checkAuth();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session);
     });
 
@@ -45,12 +46,13 @@ export default function Navbar() {
     };
   }, []);
 
-  // Determine the button href and text based on auth status
-  const authButtonHref = isAuthenticated ? FRONTEND_URLS.dashboard : FRONTEND_URLS.login;
+  const authButtonHref = isAuthenticated
+    ? FRONTEND_URLS.dashboard
+    : FRONTEND_URLS.login;
   const authButtonText = isAuthenticated ? 'داشبورد' : 'ورود';
 
   return (
-    <nav className="fixed top-0 w-full backdrop-blur-sm z-50 border-b">
+    <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-sm z-50 border-b border-[hsl(var(--border))]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -59,12 +61,17 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-4">
-            <Link href="#features" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link
+              href="#features"
+              className="text-foreground hover:text-primary transition-colors font-medium"
+            >
               ویژگی‌ها
             </Link>
-            <Link href="#products" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link
+              href="#products"
+              className="text-foreground hover:text-primary transition-colors font-medium"
+            >
               محصولات
             </Link>
             <Link
@@ -76,50 +83,46 @@ export default function Navbar() {
             <ThemeToggle />
             {!isLoading && (
               <Button asChild>
-                <Link href={authButtonHref}>
-                  {authButtonText}
-                </Link>
+                <Link href={authButtonHref}>{authButtonText}</Link>
               </Button>
             )}
           </div>
 
-          {/* Mobile Menu */}
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                </Button>
+                <Button variant="outline">Menu</Button>
               </SheetTrigger>
-              <SheetContent side="right">
+              <SheetContent side="left">
                 <SheetHeader>
-                  <SheetTitle>منو</SheetTitle>
+                  <SheetTitle>Menu</SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col gap-4 mt-6">
-                  <Link href="#features" className="text-foreground hover:text-primary transition-colors font-medium">
+                <nav className="flex flex-col gap-4 p-4">
+                  <a
+                    href="#features"
+                    className="font-medium text-sm hover:underline"
+                  >
                     ویژگی‌ها
-                  </Link>
-                  <Link href="#products" className="text-foreground hover:text-primary transition-colors font-medium">
+                  </a>
+                  <a
+                    href="#products"
+                    className="font-medium text-sm hover:underline"
+                  >
                     محصولات
-                  </Link>
-                  <Link
+                  </a>
+                  <a
                     href={BLOG_URLS.home}
-                    className="text-foreground hover:text-primary transition-colors font-medium"
+                    className="font-medium text-sm hover:underline"
                   >
                     وبلاگ
-                  </Link>
-                  <div className="flex items-center justify-between">
-                    <span className="text-foreground font-medium">تم:</span>
-                    <ThemeToggle />
-                  </div>
-                  {!isLoading && (
-                    <Button asChild className="w-full">
-                      <Link href={authButtonHref}>
-                        {authButtonText}
-                      </Link>
-                    </Button>
-                  )}
-                </div>
+                  </a>
+                  <a
+                    href={authButtonHref}
+                    className="font-medium text-sm hover:underline"
+                  >
+                    {authButtonText}
+                  </a>
+                </nav>
               </SheetContent>
             </Sheet>
           </div>
@@ -128,4 +131,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

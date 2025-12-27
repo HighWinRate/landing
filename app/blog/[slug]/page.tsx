@@ -37,7 +37,15 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getPost(params.slug);
+  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  
+  if (!slug) {
+    return {
+      title: 'پست یافت نشد',
+    };
+  }
+  
+  const post = await getPost(slug);
   
   if (!post) {
     return {
@@ -53,7 +61,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PostPage({ params }: Props) {
-  const post = await getPost(params.slug);
+  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  
+  if (!slug) {
+    notFound();
+  }
+  
+  const post = await getPost(slug);
 
   if (!post) {
     notFound();

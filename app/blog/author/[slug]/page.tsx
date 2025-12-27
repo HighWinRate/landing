@@ -37,7 +37,15 @@ async function getPostsByAuthor(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const author = await getAuthor(params.slug);
+  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  
+  if (!slug) {
+    return {
+      title: 'نویسنده یافت نشد',
+    };
+  }
+  
+  const author = await getAuthor(slug);
   
   if (!author) {
     return {
@@ -52,8 +60,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function AuthorPage({ params }: Props) {
-  const author = await getAuthor(params.slug);
-  const posts = await getPostsByAuthor(params.slug);
+  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  
+  if (!slug) {
+    notFound();
+  }
+  
+  const author = await getAuthor(slug);
+  const posts = await getPostsByAuthor(slug);
 
   if (!author) {
     notFound();

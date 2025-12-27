@@ -34,7 +34,15 @@ async function getPostsByCategory(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = await getCategory(params.slug);
+  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  
+  if (!slug) {
+    return {
+      title: 'دسته‌بندی یافت نشد',
+    };
+  }
+  
+  const category = await getCategory(slug);
   
   if (!category) {
     return {
@@ -49,8 +57,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const category = await getCategory(params.slug);
-  const posts = await getPostsByCategory(params.slug);
+  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  
+  if (!slug) {
+    notFound();
+  }
+  
+  const category = await getCategory(slug);
+  const posts = await getPostsByCategory(slug);
 
   if (!category) {
     notFound();

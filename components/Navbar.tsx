@@ -1,6 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { Menu } from 'lucide-react';
+import { FRONTEND_URLS, BLOG_URLS } from '@/lib/constants';
+import ThemeToggle from './ThemeToggle';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -19,10 +22,40 @@ export default function Navbar() {
             High Win Rate
           </Link>
 
+          <div className="hidden md:flex items-center gap-4">
+            <Link
+              href="#features"
+              className="text-sm font-medium hover:underline"
+            >
+              ویژگی‌ها
+            </Link>
+            <Link
+              href="#products"
+              className="text-sm font-medium hover:underline"
+            >
+              محصولات
+            </Link>
+            <Link
+              href={BLOG_URLS.home}
+              className="text-sm font-medium hover:underline"
+            >
+              وبلاگ
+            </Link>
+            <Link
+              href={FRONTEND_URLS.login}
+              className="text-sm font-medium hover:underline"
+            >
+              ورود
+            </Link>
+            <ThemeToggle />
+          </div>
+
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline">Menu</Button>
+                <Button variant="outline" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
               </SheetTrigger>
               <SheetContent side="left">
                 <SheetHeader>
@@ -42,17 +75,18 @@ export default function Navbar() {
                     محصولات
                   </a>
                   <a
-                    href="/blog"
+                    href={BLOG_URLS.home}
                     className="font-medium text-sm hover:underline"
                   >
                     وبلاگ
                   </a>
                   <a
-                    href="/login"
+                    href={FRONTEND_URLS.login}
                     className="font-medium text-sm hover:underline"
                   >
                     ورود
                   </a>
+                  <ThemeToggle />
                 </nav>
               </SheetContent>
             </Sheet>

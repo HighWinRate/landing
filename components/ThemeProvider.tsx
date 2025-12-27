@@ -1,32 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import type { ComponentProps } from 'react';
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
+type ThemeProviderProps = ComponentProps<typeof NextThemesProvider>;
 
-  useEffect(() => {
-    setMounted(true);
-    
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Default to light mode if no preference is saved
-    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-    
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  // Prevent flash of wrong theme
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
-  return <>{children}</>;
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return (
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange={false}
+      storageKey="theme"
+      {...props}
+    >
+      {children}
+    </NextThemesProvider>
+  );
 }
-

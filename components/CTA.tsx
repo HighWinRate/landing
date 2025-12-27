@@ -16,7 +16,8 @@ export default function CTA() {
           آماده شروع هستید؟
         </h2>
         <p className="text-xl text-gray-700 dark:text-primary-100 mb-8 max-w-2xl mx-auto">
-          همین حالا ثبت‌نام کنید و به بهترین استراتژی‌های معاملاتی دسترسی پیدا کنید
+          همین حالا ثبت‌نام کنید و به بهترین استراتژی‌های معاملاتی دسترسی پیدا
+          کنید
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
@@ -27,7 +28,7 @@ export default function CTA() {
           </Link>
           <Link
             href={FRONTEND_URLS.products}
-            className="px-8 py-4 bg-transparent border-2 border-primary-600 dark:border-white text-primary-700 dark:text-white font-semibold rounded-lg hover:bg-primary-600 hover:text-white dark:hover:bg-white dark:hover:text-gray-900 transition-all duration-300"
+            className="px-8 py-4 bg-transparent border-2 border-primary-600 dark:border-white text-primary-600 dark:text-white font-semibold rounded-lg hover:!bg-primary-700 hover:!text-white dark:hover:!bg-white dark:hover:!text-gray-900 transition-all duration-300"
           >
             مشاهده محصولات
           </Link>

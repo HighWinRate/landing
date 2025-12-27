@@ -52,11 +52,11 @@ export default function About() {
             </div>
           </div>
           <div className="relative">
-            <div className="bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl p-8 shadow-2xl">
-              <div className="text-white space-y-6">
-                <div className="text-6xl font-bold">85%+</div>
-                <div className="text-2xl font-semibold">نرخ برد متوسط</div>
-                <p className="text-primary-100">
+            <div className="bg-gradient-to-br from-primary-100 via-primary-200 to-primary-300 dark:from-primary-500 dark:via-primary-600 dark:to-primary-700 rounded-2xl p-8 shadow-2xl">
+              <div className="space-y-6">
+                <div className="text-6xl font-bold text-primary-700 dark:text-white">85%+</div>
+                <div className="text-2xl font-semibold text-primary-800 dark:text-white">نرخ برد متوسط</div>
+                <p className="text-primary-900 dark:text-primary-100">
                   استراتژی‌های ما با نرخ برد بالای 85% در بازارهای مختلف تست شده‌اند
                 </p>
               </div>

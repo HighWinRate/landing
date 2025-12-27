@@ -42,7 +42,7 @@ export default function Navbar() {
   const authButtonText = isAuthenticated ? 'داشبورد' : 'ورود';
 
   return (
-    <nav className="fixed top-0 w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800">
+    <nav className="fixed top-0 w-full backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800 navbar-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -53,15 +53,15 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-4 space-x-reverse">
-            <Link href="#features" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+            <Link href="#features" className="text-gray-900 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
               ویژگی‌ها
             </Link>
-            <Link href="#products" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+            <Link href="#products" className="text-gray-900 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
               محصولات
             </Link>
             <Link
               href={BLOG_URLS.home}
-              className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              className="text-gray-900 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
             >
               وبلاگ
             </Link>
@@ -69,7 +69,7 @@ export default function Navbar() {
             {!isLoading && (
               <Link
                 href={authButtonHref}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                className="px-4 py-2 bg-primary-700 dark:bg-primary-500 text-white rounded-lg hover:bg-primary-800 dark:hover:bg-primary-600 transition-colors font-medium shadow-lg login-button"
               >
                 {authButtonText}
               </Link>
@@ -80,7 +80,7 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400"
+              className="text-gray-900 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isOpen ? (
@@ -96,20 +96,20 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-800">
-            <Link href="#features" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+            <Link href="#features" className="block py-2 text-gray-900 dark:text-gray-300 hover:text-primary-600 font-medium">
               ویژگی‌ها
             </Link>
-            <Link href="#products" className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600">
+            <Link href="#products" className="block py-2 text-gray-900 dark:text-gray-300 hover:text-primary-600 font-medium">
               محصولات
             </Link>
             <Link
               href={BLOG_URLS.home}
-              className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600"
+              className="block py-2 text-gray-900 dark:text-gray-300 hover:text-primary-600 font-medium"
             >
               وبلاگ
             </Link>
             <div className="flex items-center justify-between py-2">
-              <span className="text-gray-700 dark:text-gray-300">تم:</span>
+              <span className="text-gray-900 dark:text-gray-300 font-medium">تم:</span>
               <ThemeToggle />
             </div>
             {!isLoading && (

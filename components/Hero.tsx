@@ -18,13 +18,15 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-8">
         <div className="animate-fade-in-up">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight drop-shadow-sm">
             استراتژی‌های معاملاتی
             <br />
-            <span className="text-primary-700 dark:text-primary-200">با نرخ برد بالا</span>
+            <span className="text-primary-700 dark:text-primary-100">
+              با نرخ برد بالا
+            </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-gray-700 dark:text-primary-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-700 dark:text-white mb-8 max-w-3xl mx-auto leading-relaxed hero-description">
             دسترسی به بهترین استراتژی‌های معاملاتی، دوره‌های آموزشی حرفه‌ای و
             فایل‌های راهنما برای موفقیت در بازارهای مالی
           </p>
@@ -38,7 +40,7 @@ export default function Hero() {
             </Link>
             <Link
               href="#features"
-              className="px-8 py-4 bg-transparent border-2 border-primary-600 dark:border-white text-primary-700 dark:text-white font-semibold rounded-lg hover:bg-primary-600 hover:text-white dark:hover:bg-white dark:hover:text-primary-900 transition-all duration-300"
+              className="px-8 py-4 bg-transparent border-2 border-primary-600 dark:border-white text-primary-600 dark:text-white font-semibold rounded-lg hover:!bg-primary-700 hover:!text-white dark:hover:!bg-white dark:hover:!text-primary-900 transition-all duration-300"
             >
               ویژگی‌ها
             </Link>
@@ -48,16 +50,28 @@ export default function Hero() {
         {/* Stats */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           <div className="bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-primary-200 dark:border-white/20 shadow-lg">
-            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">85%+</div>
-            <div className="text-primary-700 dark:text-primary-200">نرخ برد متوسط</div>
+            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+              85%+
+            </div>
+            <div className="text-primary-700 dark:text-primary-200">
+              نرخ برد متوسط
+            </div>
           </div>
           <div className="bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-primary-200 dark:border-white/20 shadow-lg">
-            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">1000+</div>
-            <div className="text-primary-700 dark:text-primary-200">معامله بکتست شده</div>
+            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+              1000+
+            </div>
+            <div className="text-primary-700 dark:text-primary-200">
+              معامله بکتست شده
+            </div>
           </div>
           <div className="bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-primary-200 dark:border-white/20 shadow-lg">
-            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">500+</div>
-            <div className="text-primary-700 dark:text-primary-200">کاربر راضی</div>
+            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+              500+
+            </div>
+            <div className="text-primary-700 dark:text-primary-200">
+              کاربر راضی
+            </div>
           </div>
         </div>
       </div>

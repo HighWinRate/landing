@@ -1,37 +1,35 @@
 'use client';
 
+import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
 export default function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const isDarkMode = document.documentElement.classList.contains('dark');
-    setIsDark(isDarkMode);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = isDark ? 'light' : 'dark';
-    setIsDark(!isDark);
-    
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
-
   if (!mounted) {
-    return null; // Prevent hydration mismatch
+    return (
+      <button
+        className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+        aria-label="Toggle theme"
+        disabled
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+    );
   }
+
+  const isDark = theme === 'dark';
 
   return (
     <button
-      onClick={toggleTheme}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
       className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
       aria-label="Toggle theme"
     >
@@ -49,4 +47,3 @@ export default function ThemeToggle() {
     </button>
   );
 }
-

@@ -60,6 +60,8 @@ export const postBySlugQuery = `*[_type == "post" && slug.current == $slug][0] {
     socialLinks
   },
   categories[]->{
+    _id,
+    _ref,
     title,
     slug,
     description
@@ -123,6 +125,24 @@ export const postsByAuthorQuery = `*[_type == "post" && author->slug.current == 
   publishedAt,
   excerpt,
   mainImage,
+  categories[]->{
+    title,
+    slug
+  }
+}`;
+
+export const relatedPostsQuery = `*[_type == "post" && _id != $currentId && count(categories[@._ref in $categoryIds]) > 0] | order(publishedAt desc) [0...3] {
+  _id,
+  title,
+  slug,
+  publishedAt,
+  excerpt,
+  mainImage,
+  author->{
+    name,
+    slug,
+    image
+  },
   categories[]->{
     title,
     slug

@@ -6,6 +6,8 @@ import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { calculateReadingTime, formatReadingTime } from '@/lib/blog-utils';
+import { Clock } from 'lucide-react';
 
 interface Post {
   _id: string;
@@ -41,15 +43,17 @@ export default function BlogPost({ post }: BlogPostProps) {
   const publishedDate = post.publishedAt
     ? format(new Date(post.publishedAt), 'd MMMM yyyy')
     : '';
+  const readingTime = calculateReadingTime(post.body);
+  const readingTimeText = formatReadingTime(readingTime);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-4xl mb-4">
+        <CardTitle className="text-4xl mb-4 leading-tight">
           {post.title}
         </CardTitle>
         {post.excerpt && (
-          <p className="text-xl text-muted-foreground mb-6">
+          <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
             {post.excerpt}
           </p>
         )}
@@ -74,6 +78,11 @@ export default function BlogPost({ post }: BlogPostProps) {
           )}
           {publishedDate && <span>•</span>}
           {publishedDate && <span>{publishedDate}</span>}
+          <span>•</span>
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4" />
+            <span>{readingTimeText} مطالعه</span>
+          </div>
         </div>
         {post.categories && post.categories.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-4">
@@ -103,9 +112,9 @@ export default function BlogPost({ post }: BlogPostProps) {
       )}
 
       <CardContent className="px-6 py-8">
-        <div className="prose prose-lg dark:prose-invert max-w-none">
+        <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:mt-8 prose-headings:mb-4 prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-relaxed prose-p:mb-4 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:font-semibold prose-ul:list-disc prose-ol:list-decimal prose-li:my-2 prose-img:rounded-lg prose-img:shadow-lg prose-blockquote:border-r-4 prose-blockquote:border-primary prose-blockquote:pr-4 prose-blockquote:italic">
           <PortableText value={post.body} />
-        </div>
+        </article>
       </CardContent>
 
       {post.author && (

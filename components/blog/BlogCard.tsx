@@ -36,55 +36,57 @@ export default function BlogCard({ post }: BlogCardProps) {
 
   return (
     <Link href={`/blog/${post.slug.current}`}>
-      <Card className="h-full flex flex-col hover:shadow-lg transition-shadow">
+      <Card className="h-full flex flex-col hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group">
         {post.mainImage && (
-          <div className="relative w-full h-48">
+          <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
             <Image
               src={urlFor(post.mainImage).width(600).height(300).url()}
               alt={post.title}
               fill
-              className="object-cover rounded-t-lg"
+              className="object-cover group-hover:scale-110 transition-transform duration-300"
             />
           </div>
         )}
-        <CardHeader>
-          <CardTitle className="line-clamp-2">
+        <CardHeader className="flex-1">
+          <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
             {post.title}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col">
           {post.excerpt && (
-            <p className="text-muted-foreground mb-4 line-clamp-3 flex-1">
+            <p className="text-muted-foreground mb-4 line-clamp-3 flex-1 text-sm leading-relaxed">
               {post.excerpt}
             </p>
           )}
-          <div className="mt-auto">
+          <div className="mt-auto space-y-3">
             {post.categories && post.categories.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-3">
+              <div className="flex flex-wrap gap-2">
                 {post.categories.map((category) => (
                   <Link
                     key={category.slug.current}
                     href={`/blog/category/${category.slug.current}`}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-xs hover:bg-primary hover:text-primary-foreground transition-colors">
                       {category.title}
                     </Badge>
                   </Link>
                 ))}
               </div>
             )}
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border">
               {post.author && (
                 <Link
                   href={`/blog/author/${post.author.slug.current}`}
-                  className="hover:text-foreground transition-colors"
+                  className="hover:text-foreground transition-colors font-medium"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {post.author.name}
                 </Link>
               )}
-              {publishedDate && <span>{publishedDate}</span>}
+              {publishedDate && (
+                <span className="text-muted-foreground/70">{publishedDate}</span>
+              )}
             </div>
           </div>
         </CardContent>

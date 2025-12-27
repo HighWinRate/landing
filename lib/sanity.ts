@@ -44,6 +44,28 @@ export const postsQuery = `*[_type == "post" && defined(slug.current)] | order(p
   }
 }`;
 
+// Query with pagination
+export const postsQueryPaginated = `*[_type == "post" && defined(slug.current)] | order(publishedAt desc) [$start...$end] {
+  _id,
+  title,
+  slug,
+  publishedAt,
+  excerpt,
+  mainImage,
+  author->{
+    name,
+    slug,
+    image
+  },
+  categories[]->{
+    title,
+    slug
+  }
+}`;
+
+// Count total posts
+export const postsCountQuery = `count(*[_type == "post" && defined(slug.current)])`;
+
 // Query with better error handling and case-insensitive matching
 export const postBySlugQuery = `*[_type == "post" && slug.current == $slug][0] {
   _id,

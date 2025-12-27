@@ -27,54 +27,63 @@ interface Post {
 
 interface BlogCardProps {
   post: Post;
+  imagePosition?: 'left' | 'right';
 }
 
-export default function BlogCard({ post }: BlogCardProps) {
+export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProps) {
   const publishedDate = post.publishedAt
     ? format(new Date(post.publishedAt), 'd MMMM yyyy')
     : '';
 
+  const isImageLeft = imagePosition === 'left';
+
   return (
-    <Link href={`/blog/${post.slug.current}`}>
-      <Card className="h-full flex flex-col hover:shadow-lg transition-shadow group">
-        {post.mainImage && (
-          <div className="relative w-full h-48 overflow-hidden">
-            <Image
-              src={urlFor(post.mainImage).width(600).height(300).url()}
-              alt={post.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-        )}
-        <CardHeader className="flex-1">
-          <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
-            {post.title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1 flex flex-col">
-          {post.excerpt && (
-            <p className="text-muted-foreground mb-4 line-clamp-3 flex-1 text-sm">
-              {post.excerpt}
-            </p>
+    <Link href={`/blog/${post.slug.current}`} className="block w-full">
+      <Card className="w-full hover:shadow-lg transition-shadow group">
+        <div className={`flex flex-col md:flex-row ${isImageLeft ? 'md:flex-row-reverse' : ''}`}>
+          {/* تصویر */}
+          {post.mainImage && (
+            <div className="relative w-full md:w-2/5 h-64 md:h-64 flex-shrink-0">
+              <Image
+                src={urlFor(post.mainImage).width(800).height(500).url()}
+                alt={post.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           )}
-          <div className="mt-auto space-y-3">
-            {post.categories && post.categories.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {post.categories.map((category) => (
-                  <Link
-                    key={category.slug.current}
-                    href={`/blog/category/${category.slug.current}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Badge variant="secondary" className="text-xs">
-                      {category.title}
-                    </Badge>
-                  </Link>
-                ))}
-              </div>
-            )}
-            <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
+          
+          {/* محتوا */}
+          <div className="flex-1 flex flex-col p-6">
+            <div className="flex-1">
+              <CardTitle className="text-2xl mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                {post.title}
+              </CardTitle>
+              {post.excerpt && (
+                <p className="text-muted-foreground line-clamp-3 mb-4">
+                  {post.excerpt}
+                </p>
+              )}
+              
+              {/* دسته‌بندی‌ها */}
+              {post.categories && post.categories.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {post.categories.map((category) => (
+                    <Link
+                      key={category.slug.current}
+                      href={`/blog/category/${category.slug.current}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Badge variant="secondary" className="text-xs">
+                        {category.title}
+                      </Badge>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <div className="flex items-center justify-between text-sm text-muted-foreground pt-4 border-t">
               {post.author && (
                 <Link
                   href={`/blog/author/${post.author.slug.current}`}
@@ -87,7 +96,7 @@ export default function BlogCard({ post }: BlogCardProps) {
               {publishedDate && <span>{publishedDate}</span>}
             </div>
           </div>
-        </CardContent>
+        </div>
       </Card>
     </Link>
   );

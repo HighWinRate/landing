@@ -1,6 +1,7 @@
 import { client, postsQueryPaginated, postsCountQuery, isSanityConfigured } from '@/lib/sanity';
 import BlogList from '@/components/blog/BlogList';
 import Pagination from '@/components/blog/Pagination';
+import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,7 +11,11 @@ export const metadata: Metadata = {
 
 const POSTS_PER_PAGE = 6;
 
-async function getPosts(page: number = 1) {
+type Props = {
+  params: { page: string };
+};
+
+async function getPosts(page: number) {
   if (!isSanityConfigured()) {
     return { posts: [], total: 0 };
   }
@@ -30,9 +35,20 @@ async function getPosts(page: number = 1) {
   }
 }
 
-export default async function BlogPage() {
-  const { posts, total } = await getPosts(1);
+export default async function BlogPagePage({ params }: Props) {
+  const resolvedParams = await params;
+  const page = parseInt(resolvedParams.page) || 1;
+  
+  if (page < 1) {
+    notFound();
+  }
+
+  const { posts, total } = await getPosts(page);
   const totalPages = Math.ceil(total / POSTS_PER_PAGE);
+
+  if (page > totalPages && totalPages > 0) {
+    notFound();
+  }
 
   return (
     <div className="bg-background">
@@ -49,7 +65,7 @@ export default async function BlogPage() {
         <BlogList posts={posts} />
         
         {totalPages > 1 && (
-          <Pagination currentPage={1} totalPages={totalPages} />
+          <Pagination currentPage={page} totalPages={totalPages} />
         )}
       </div>
     </div>

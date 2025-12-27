@@ -1,5 +1,6 @@
 import { client, postsQuery, isSanityConfigured } from '@/lib/sanity';
 import BlogList from '@/components/blog/BlogList';
+import BlogDebug from '@/components/blog/BlogDebug';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -42,27 +43,12 @@ export default async function BlogPage() {
           </p>
         </div>
 
-        {/* Debug Panel - فقط در development نمایش داده می‌شود */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mb-6 p-4 bg-muted rounded-lg border">
-            <h3 className="font-semibold mb-2">🔍 Debug Information:</h3>
-            <ul className="text-sm space-y-1">
-              <li>Sanity Configured: <span className={isConfigured ? 'text-green-600' : 'text-red-600'}>{isConfigured ? '✅ Yes' : '❌ No'}</span></li>
-              <li>Project ID: <code className="bg-background px-1 rounded">{projectId || 'Not set'}</code></li>
-              <li>Posts Found: <span className="font-semibold">{posts.length}</span></li>
-              {!isConfigured && (
-                <li className="text-red-600 mt-2">
-                  ⚠️ Please set NEXT_PUBLIC_SANITY_PROJECT_ID in your .env.local file
-                </li>
-              )}
-              {isConfigured && posts.length === 0 && (
-                <li className="text-yellow-600 mt-2">
-                  ⚠️ Sanity is configured but no posts found. Make sure you have published at least one post in Sanity Studio.
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
+        {/* Debug Panel - همیشه نمایش داده می‌شود */}
+        <BlogDebug 
+          isConfigured={isConfigured}
+          projectId={projectId}
+          postsCount={posts.length}
+        />
 
         <BlogList posts={posts} />
       </div>

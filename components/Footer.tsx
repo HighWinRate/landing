@@ -24,8 +24,6 @@ export default function Footer() {
               <li>
                 <Link
                   href={BLOG_URLS.home}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
                   وبلاگ

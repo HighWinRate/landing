@@ -60,8 +60,6 @@ export default function Navbar() {
             </Link>
             <Link
               href={BLOG_URLS.home}
-              target="_blank"
-              rel="noopener noreferrer"
               className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
             >
               وبلاگ
@@ -104,8 +102,6 @@ export default function Navbar() {
             </Link>
             <Link
               href={BLOG_URLS.home}
-              target="_blank"
-              rel="noopener noreferrer"
               className="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600"
             >
               وبلاگ

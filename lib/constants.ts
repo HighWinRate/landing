@@ -22,9 +22,8 @@ export const FRONTEND_URLS = {
   dashboard: getFrontendUrl('/dashboard'),
 } as const;
 
-// Blog URLs - استفاده از /blog برای SEO بهتر (Next.js Rewrite)
-// در production، Next.js rewrite این را به BLOG_URL (Ghost server) proxy می‌کند
+// Blog URLs - Blog is now a standalone Next.js app
 export const BLOG_URLS = {
-  home: '/blog', // برای SEO بهتر، از /blog استفاده می‌کنیم (نه subdomain)
+  home: process.env.NEXT_PUBLIC_BLOG_URL || 'http://localhost:3004',
 } as const;
 

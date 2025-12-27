@@ -81,7 +81,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  const resolvedParams = await params;
+  const slug = typeof resolvedParams.slug === 'string' ? resolvedParams.slug : resolvedParams.slug?.[0] || '';
   
   if (!slug) {
     return {
@@ -172,9 +173,11 @@ async function getRelatedPosts(currentPost: any) {
 }
 
 export default async function PostPage({ params }: Props) {
-  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  // In Next.js 15, params is a Promise and must be awaited
+  const resolvedParams = await params;
+  const slug = typeof resolvedParams.slug === 'string' ? resolvedParams.slug : resolvedParams.slug?.[0] || '';
   
-  console.log('📄 PostPage called with params:', params);
+  console.log('📄 PostPage called with params:', resolvedParams);
   console.log('📄 Extracted slug:', slug);
   
   if (!slug) {

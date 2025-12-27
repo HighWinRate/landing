@@ -34,7 +34,8 @@ async function getPostsByCategory(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  const resolvedParams = await params;
+  const slug = typeof resolvedParams.slug === 'string' ? resolvedParams.slug : resolvedParams.slug?.[0] || '';
   
   if (!slug) {
     return {
@@ -57,7 +58,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const slug = typeof params.slug === 'string' ? params.slug : params.slug?.[0] || '';
+  const resolvedParams = await params;
+  const slug = typeof resolvedParams.slug === 'string' ? resolvedParams.slug : resolvedParams.slug?.[0] || '';
   
   if (!slug) {
     notFound();

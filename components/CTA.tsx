@@ -10,12 +10,12 @@ export default function CTA() {
   // if user tries to access /register while logged in.
 
   return (
-    <section className="py-20 bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-900 dark:to-primary-950">
+    <section className="py-20 bg-gradient-to-r from-primary-100 to-primary-300 dark:from-primary-900 dark:to-primary-950">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
           آماده شروع هستید؟
         </h2>
-        <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
+        <p className="text-xl text-gray-700 dark:text-primary-100 mb-8 max-w-2xl mx-auto">
           همین حالا ثبت‌نام کنید و به بهترین استراتژی‌های معاملاتی دسترسی پیدا کنید
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -27,7 +27,7 @@ export default function CTA() {
           </Link>
           <Link
             href={FRONTEND_URLS.products}
-            className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-gray-900 transition-all duration-300"
+            className="px-8 py-4 bg-transparent border-2 border-primary-600 dark:border-white text-primary-700 dark:text-white font-semibold rounded-lg hover:bg-primary-600 hover:text-white dark:hover:bg-white dark:hover:text-gray-900 transition-all duration-300"
           >
             مشاهده محصولات
           </Link>

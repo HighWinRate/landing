@@ -5,12 +5,33 @@ let cachedPayload: any = null;
 
 // This function should only be used in server components/API routes
 export async function getPayloadClient() {
+  // Validate PAYLOAD_SECRET at runtime (not build time)
+  const secret = process.env.PAYLOAD_SECRET;
+  if (!secret || secret === 'dummy-secret-for-build-time-only') {
+    const error = new Error(
+      'PAYLOAD_SECRET is required. Please set it in your environment variables.\n' +
+      'You can generate one using: openssl rand -base64 32'
+    ) as any;
+    error.payloadInitError = true;
+    throw error;
+  }
+
   if (cachedPayload) {
     return cachedPayload;
   }
   
-  cachedPayload = await getPayloadHMR({ config });
-  return cachedPayload;
+  try {
+    cachedPayload = await getPayloadHMR({ config });
+    return cachedPayload;
+  } catch (error: any) {
+    if (error?.payloadInitError || error?.message?.includes('secret')) {
+      console.error('Payload initialization error:', error.message);
+      const newError = new Error('Payload CMS configuration error. Please check PAYLOAD_SECRET and database connection.') as any;
+      newError.payloadInitError = true;
+      throw newError;
+    }
+    throw error;
+  }
 }
 
 // Helper function to get the base URL for images

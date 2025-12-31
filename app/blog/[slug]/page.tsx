@@ -15,12 +15,23 @@ type Props = {
 };
 
 export async function generateStaticParams() {
+  // Skip if PAYLOAD_SECRET is not set (for build time)
+  if (!process.env.PAYLOAD_SECRET) {
+    console.warn('PAYLOAD_SECRET is not set. Skipping static params generation.');
+    return [];
+  }
+
   try {
     const slugs = await getAllPostSlugs();
     return slugs.map((item: any) => ({
       slug: item.slug,
     })).filter((p: any) => p.slug);
-  } catch (error) {
+  } catch (error: any) {
+    // If it's a secret error, return empty array to allow build to continue
+    if (error?.payloadInitError || error?.message?.includes('secret')) {
+      console.warn('Payload not configured. Skipping static params generation.');
+      return [];
+    }
     console.warn('Failed to fetch post slugs:', error);
     return [];
   }

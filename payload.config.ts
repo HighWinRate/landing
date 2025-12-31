@@ -73,13 +73,17 @@ const getDatabaseConfig = () => {
   };
 };
 
+// Get PAYLOAD_SECRET - will be validated at runtime, not build time
+// This allows the build to complete even if secret is not set (for CI/CD)
+const payloadSecret = process.env.PAYLOAD_SECRET || 'dummy-secret-for-build-time-only';
+
 export default buildConfig({
   admin: {
     user: Users.slug,
   },
   collections: [Users, Posts, Authors, Categories, Media],
   editor: lexicalEditor({}),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: payloadSecret,
   typescript: {
     outputFile: path.resolve(process.cwd(), 'payload-types.ts'),
   },

@@ -1,4 +1,4 @@
-import { getPayloadHMR } from '@payloadcms/next/utilities';
+import { getPayload } from 'payload';
 import config from '../payload.config';
 
 let cachedPayload: any = null;
@@ -21,7 +21,8 @@ export async function getPayloadClient() {
   }
   
   try {
-    cachedPayload = await getPayloadHMR({ config });
+    // Use getPayload instead of getPayloadHMR (newer API)
+    cachedPayload = await getPayload({ config });
     return cachedPayload;
   } catch (error: any) {
     if (error?.payloadInitError || error?.message?.includes('secret')) {

@@ -8,6 +8,9 @@ import { Authors } from './collections/Authors';
 import { Categories } from './collections/Categories';
 import { Media } from './collections/Media';
 
+// Supabase Storage Adapter (same approach as backend)
+import { supabaseStorageAdapter } from './storage/supabase-storage';
+
 // Get database configuration from environment variables
 // Supports both connection string and individual variables (like backend)
 const getDatabaseConfig = () => {

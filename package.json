@@ -8,7 +8,7 @@
     "start": "next start -p 3003",
     "lint": "eslint",
     "payload": "payload",
-    "payload:migrate": "tsx --tsconfig tsconfig.json node_modules/payload/bin.js migrate"
+    "payload:migrate": "tsx scripts/migrate.ts"
   },
   "dependencies": {
     "@lexical/react": "^0.39.0",

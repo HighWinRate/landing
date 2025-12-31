@@ -56,15 +56,27 @@ openssl rand -base64 32
 
 برای ایجاد جداول در پایگاه داده Supabase:
 
+**روش 1: استفاده از script (پیشنهادی)**
+
 ```bash
 cd landing
-npm run payload migrate
+npm run payload:migrate
 ```
 
-یا اگر دستور `payload` کار نکرد:
+**روش 2: استفاده از Payload CLI**
 
 ```bash
 npx payload migrate
+```
+
+**روش 3: در Vercel (بعد از deploy)**
+
+```bash
+# Pull environment variables
+vercel env pull .env.local
+
+# Run migration
+npm run payload:migrate
 ```
 
 این دستور جداول زیر را در Supabase ایجاد می‌کند:
@@ -74,6 +86,10 @@ npx payload migrate
 - `authors` - نویسندگان
 - `categories` - دسته‌بندی‌ها
 - `media` - فایل‌های رسانه‌ای
+- `payload_migrations` - تاریخچه migration ها
+- `payload_preferences` - تنظیمات Payload
+
+**⚠️ مهم:** اگر migration کار نکرد، به `MIGRATION_GUIDE.md` مراجعه کنید.
 
 ### مرحله 3: راه‌اندازی سرور
 

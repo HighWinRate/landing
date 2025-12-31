@@ -13,7 +13,10 @@ export const Media: CollectionConfig = {
   access: {
     read: () => true,
   },
-  upload: true,
+  upload: {
+    // Disable local storage to use Supabase Storage adapter (via hooks)
+    disableLocalStorage: true,
+  },
   hooks: {
     beforeChange: [storageHooks.beforeChange],
     afterDelete: [storageHooks.afterDelete],

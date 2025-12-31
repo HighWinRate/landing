@@ -20,10 +20,17 @@ const getDatabaseConfig = () => {
     process.env.DATABASE_URL;
 
   if (connectionString) {
+    // Add SSL parameters to connection string if not already present
+    let finalConnectionString = connectionString;
+    if (!connectionString.includes('sslmode=')) {
+      const separator = connectionString.includes('?') ? '&' : '?';
+      finalConnectionString = `${connectionString}${separator}sslmode=require`;
+    }
+    
     return {
       pool: {
-        connectionString,
-        // SSL configuration for Supabase
+        connectionString: finalConnectionString,
+        // SSL configuration for Supabase - must be in pool config
         ssl: {
           rejectUnauthorized: false, // Supabase uses self-signed certificates
         },
@@ -68,7 +75,7 @@ const getDatabaseConfig = () => {
     return {
       pool: {
         connectionString,
-        // SSL configuration for Supabase (additional config)
+        // SSL configuration for Supabase - must be in pool config
         ssl: {
           rejectUnauthorized: false, // Supabase uses self-signed certificates
         },

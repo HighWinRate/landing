@@ -33,8 +33,10 @@ POSTGRES_DATABASE=postgres
 **روش 2: استفاده از Connection String**
 
 ```env
-POSTGRES_URL=postgresql://postgres:password@db.xxxxxxxxxxxxx.supabase.co:5432/postgres
+POSTGRES_URL=postgresql://postgres:password@db.xxxxxxxxxxxxx.supabase.co:5432/postgres?sslmode=require
 ```
+
+**⚠️ مهم:** اگر از connection string استفاده می‌کنید، حتماً `?sslmode=require` را اضافه کنید.
 
 **روش 3: استفاده از Supabase URL (host خودکار استخراج می‌شود)**
 
@@ -47,7 +49,17 @@ POSTGRES_PASSWORD=your-database-password
 POSTGRES_DATABASE=postgres
 ```
 
-### 3. سایر متغیرها
+### 3. SSL Configuration (برای Supabase)
+
+کد به صورت خودکار SSL را برای Supabase تنظیم می‌کند. اما اگر هنوز خطای "self-signed certificate" دارید:
+
+**راه حل اضافی:** می‌توانید این environment variable را اضافه کنید:
+
+```env
+PGSSLMODE=require
+```
+
+### 4. سایر متغیرها
 
 ```env
 NEXT_PUBLIC_API_URL=https://api.highwinrate.com
@@ -115,6 +127,18 @@ Vercel به صورت خودکار از فایل `vercel.json` استفاده م�
 2. بررسی کنید که `POSTGRES_HOST` یا `SUPABASE_URL` تنظیم شده است
 3. بررسی کنید که IP Vercel در Supabase whitelist است (برای production)
 
+### خطا: "self-signed certificate in certificate chain"
+
+**علت:** Supabase از SSL استفاده می‌کند و Node.js نمی‌تواند certificate را verify کند.
+
+**راه حل:**
+1. کد به صورت خودکار SSL را تنظیم می‌کند
+2. اگر هنوز خطا دارید، بررسی کنید که:
+   - آخرین version کد را دارید (SSL config اضافه شده)
+   - `POSTGRES_URL` شامل `?sslmode=require` است (اگر از connection string استفاده می‌کنید)
+   - یا environment variable `PGSSLMODE=require` را اضافه کنید
+3. Redeploy کنید
+
 ### خطا: Peer dependency conflict
 
 **علت:** Next.js 16 با Payload 3.69.0 conflict دارد.
@@ -129,6 +153,7 @@ Vercel به صورت خودکار از فایل `vercel.json` استفاده م�
 - [ ] `POSTGRES_HOST` یا `SUPABASE_URL` تنظیم شده
 - [ ] `POSTGRES_USER` تنظیم شده (یا default: 'postgres')
 - [ ] `POSTGRES_DATABASE` تنظیم شده (یا default: 'postgres')
+- [ ] اگر از `POSTGRES_URL` استفاده می‌کنید، `?sslmode=require` اضافه شده
 - [ ] فایل `vercel.json` commit شده
 - [ ] فایل `.npmrc` commit شده (اختیاری، vercel.json کافی است)
 
@@ -155,4 +180,4 @@ Vercel به صورت خودکار از فایل `vercel.json` استفاده م�
 - **POSTGRES_PASSWORD:** هرگز این را در Git commit نکنید
 - **PAYLOAD_PUBLIC_SERVER_URL:** باید URL کامل production باشد (با https)
 - برای تغییرات در Environment Variables، باید Redeploy کنید
-
+- **SSL:** کد به صورت خودکار SSL را برای Supabase تنظیم می‌کند

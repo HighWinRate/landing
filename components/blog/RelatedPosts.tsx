@@ -1,24 +1,45 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { urlFor } from '@/lib/sanity';
+// Helper function to get image URL (client-side safe)
+function getPayloadImageUrl(image: any): string {
+  if (!image) return '';
+  
+  if (typeof image === 'string') {
+    return image;
+  }
+  
+  if (image.url) {
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL || 'http://localhost:3003';
+    return `${baseUrl}${image.url}`;
+  }
+  
+  if (image.filename) {
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL || 'http://localhost:3003';
+    return `${baseUrl}/media/${image.filename}`;
+  }
+  
+  return '';
+}
 import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Post {
-  _id: string;
+  id: string;
   title: string;
-  slug: { current: string };
+  slug: string;
   publishedAt: string;
   excerpt?: string;
   mainImage?: any;
   author?: {
+    id: string;
     name: string;
-    slug: { current: string };
+    slug: string;
     image?: any;
   };
   categories?: Array<{
+    id: string;
     title: string;
-    slug: { current: string };
+    slug: string;
   }>;
 }
 
@@ -39,14 +60,15 @@ export default function RelatedPosts({ posts }: RelatedPostsProps) {
           const publishedDate = post.publishedAt
             ? format(new Date(post.publishedAt), 'd MMMM yyyy')
             : '';
+          const mainImageUrl = post.mainImage ? getPayloadImageUrl(post.mainImage) : null;
 
           return (
-            <Link key={post._id} href={`/blog/${post.slug.current}`}>
+            <Link key={post.id} href={`/blog/${post.slug}`}>
               <Card className="h-full flex flex-col hover:shadow-lg transition-shadow">
-                {post.mainImage && (
+                {mainImageUrl && (
                   <div className="relative w-full h-40">
                     <Image
-                      src={urlFor(post.mainImage).width(400).height(200).url()}
+                      src={mainImageUrl}
                       alt={post.title}
                       fill
                       className="object-cover rounded-t-lg"

@@ -1,40 +1,14 @@
-import { client, authorBySlugQuery, postsByAuthorQuery, isSanityConfigured } from '@/lib/sanity';
+import { getAuthorBySlug, getPostsByAuthor } from '@/lib/payload';
 import BlogList from '@/components/blog/BlogList';
 import { notFound } from 'next/navigation';
-import { urlFor } from '@/lib/sanity';
+import { getPayloadImageUrl } from '@/lib/payload';
 import Image from 'next/image';
-import { PortableText } from '@portabletext/react';
+import LexicalRenderer from '@/components/blog/LexicalRenderer';
 import type { Metadata } from 'next';
 
 type Props = {
   params: { slug: string };
 };
-
-async function getAuthor(slug: string) {
-  if (!isSanityConfigured()) {
-    return null;
-  }
-  try {
-    const author = await client.fetch(authorBySlugQuery, { slug });
-    return author;
-  } catch (error) {
-    console.error('Failed to fetch author:', error);
-    return null;
-  }
-}
-
-async function getPostsByAuthor(slug: string) {
-  if (!isSanityConfigured()) {
-    return [];
-  }
-  try {
-    const posts = await client.fetch(postsByAuthorQuery, { slug });
-    return posts;
-  } catch (error) {
-    console.error('Failed to fetch posts by author:', error);
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
@@ -46,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
   
-  const author = await getAuthor(slug);
+  const author = await getAuthorBySlug(slug);
   
   if (!author) {
     return {
@@ -68,22 +42,24 @@ export default async function AuthorPage({ params }: Props) {
     notFound();
   }
   
-  const author = await getAuthor(slug);
+  const author = await getAuthorBySlug(slug);
   const posts = await getPostsByAuthor(slug);
 
   if (!author) {
     notFound();
   }
+  
+  const authorImageUrl = author.image ? getPayloadImageUrl(author.image) : null;
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-card rounded-lg shadow-lg p-8 mb-12">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            {author.image && (
+            {authorImageUrl && (
               <div className="relative w-32 h-32 rounded-full overflow-hidden flex-shrink-0">
                 <Image
-                  src={urlFor(author.image).width(128).height(128).url()}
+                  src={authorImageUrl}
                   alt={author.name}
                   fill
                   className="object-cover"
@@ -96,7 +72,7 @@ export default async function AuthorPage({ params }: Props) {
               </h1>
               {author.bio && (
                 <div className="prose prose-lg dark:prose-invert max-w-none">
-                  <PortableText value={author.bio} />
+                  <LexicalRenderer data={author.bio} />
                 </div>
               )}
               {author.socialLinks && (

@@ -30,7 +30,7 @@ npm run dev
 - ✅ طراحی مدرن و حرفه‌ای
 - ✅ پشتیبانی از Dark Mode (با next-themes)
 - ✅ نمایش محصولات از Backend
-- ✅ Blog integrated (Sanity CMS)
+- ✅ Blog integrated (Payload CMS with Supabase)
 - ✅ کاملاً Responsive
 - ✅ بهینه‌سازی شده برای SEO
 - ✅ انیمیشن‌های نرم و جذاب
@@ -48,10 +48,10 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 # Frontend URL (برای لینک‌های ورود/ثبت‌نام/محصولات)
 NEXT_PUBLIC_FRONTEND_URL=http://localhost:3001
 
-# Sanity Configuration (برای Blog)
-NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
-NEXT_PUBLIC_SANITY_DATASET=production
-SANITY_API_READ_TOKEN=your-read-token
+# Payload CMS Configuration (برای Blog)
+PAYLOAD_SECRET=your-secret-key-here
+PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3003
+POSTGRES_URL=postgresql://user:password@host:port/database
 ```
 
 **⚠️ برای Production (Vercel/Deployment):**
@@ -60,9 +60,9 @@ SANITY_API_READ_TOKEN=your-read-token
 ```env
 NEXT_PUBLIC_API_URL=https://api.highwinrate.com
 NEXT_PUBLIC_FRONTEND_URL=https://app.highwinrate.com
-NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
-NEXT_PUBLIC_SANITY_DATASET=production
-SANITY_API_READ_TOKEN=your-read-token
+PAYLOAD_SECRET=your-secret-key-here
+PAYLOAD_PUBLIC_SERVER_URL=https://highwinrate.com
+POSTGRES_URL=postgresql://user:password@host:port/database
 ```
 
 **نکته**: Landing page در `https://highwinrate.com` (بدون www) deploy می‌شود.
@@ -104,11 +104,14 @@ landing/
 │       └── BlogCard.tsx
 ├── lib/
 │   ├── api.ts          # API Client
-│   ├── sanity.ts       # Sanity Client
+│   ├── payload.ts      # Payload Client
 │   └── color-utils.ts  # Color utilities
-├── sanity/             # Sanity Studio
-│   ├── schema/         # Content schemas
-│   └── sanity.config.ts
+├── collections/        # Payload Collections
+│   ├── Posts.ts
+│   ├── Authors.ts
+│   ├── Categories.ts
+│   └── Media.ts
+├── payload.config.ts   # Payload Configuration
 └── public/             # فایل‌های استاتیک
 ```
 
@@ -185,7 +188,7 @@ Frontend اصلی صفحه اصلی خودش (`/`) را به Landing Page redire
 1. **جدا بودن از Frontend**: لندینگ پیج کاملاً مستقل است و تغییرات آن روی frontend اصلی تأثیری ندارد
 2. **API Connection**: لندینگ پیج به Backend API در پورت 3000 متصل می‌شود
 3. **Dark Mode**: پشتیبانی کامل از Dark Mode با next-themes (system preference + manual toggle)
-4. **Blog**: Blog integrated شده در `/blog` route (Sanity CMS)
+4. **Blog**: Blog integrated شده در `/blog` route (Payload CMS with Supabase)
 4. **CORS**: مطمئن شوید که `FRONTEND_URL` در Backend شامل `http://localhost:3003` است
 5. **لینک‌ها**:
    - Landing همیشه به Frontend (3001) برای عملیات کاربری لینک می‌شود
@@ -208,8 +211,8 @@ npm run start
 # Lint
 npm run lint
 
-# Sanity Studio (برای مدیریت محتوای Blog)
-npm run studio
+# Payload Admin Panel (برای مدیریت محتوای Blog)
+# دسترسی در http://localhost:3003/admin
 ```
 
 ## 🎨 Theme Management
@@ -227,14 +230,14 @@ npm run studio
 
 Blog در این پروژه integrated شده و در route `/blog` در دسترس است:
 
-- **Sanity CMS**: برای مدیریت محتوا
+- **Payload CMS**: برای مدیریت محتوا
+- **Supabase PostgreSQL**: برای ذخیره‌سازی داده‌ها
 - **Next.js**: برای نمایش محتوا
 - **SEO Optimized**: همه در یک domain (`highwinrate.com/blog`)
 
 برای مدیریت محتوا:
-```bash
-npm run studio  # Sanity Studio در http://localhost:3333
-```
+- دسترسی به Admin Panel: `http://localhost:3003/admin`
+- ابتدا باید یک کاربر admin ایجاد کنید
 
 برای جزئیات بیشتر، به [COLOR-GUIDE.md](./COLOR-GUIDE.md) مراجعه کنید.
 ```
@@ -246,9 +249,9 @@ npm run studio  # Sanity Studio در http://localhost:3333
 - TypeScript
 - Tailwind CSS 4
 - next-themes (Theme Management)
-- Sanity CMS (Blog)
-- @sanity/client
-- @portabletext/react
+- Payload CMS (Blog)
+- @payloadcms/db-postgres (PostgreSQL adapter)
+- @payloadcms/richtext-lexical (Rich text editor)
 
 ---
 

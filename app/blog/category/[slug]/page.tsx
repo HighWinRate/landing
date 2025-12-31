@@ -1,4 +1,4 @@
-import { client, categoryBySlugQuery, postsByCategoryQuery, isSanityConfigured } from '@/lib/sanity';
+import { getCategoryBySlug, getPostsByCategory } from '@/lib/payload';
 import BlogList from '@/components/blog/BlogList';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -6,32 +6,6 @@ import type { Metadata } from 'next';
 type Props = {
   params: { slug: string };
 };
-
-async function getCategory(slug: string) {
-  if (!isSanityConfigured()) {
-    return null;
-  }
-  try {
-    const category = await client.fetch(categoryBySlugQuery, { slug });
-    return category;
-  } catch (error) {
-    console.error('Failed to fetch category:', error);
-    return null;
-  }
-}
-
-async function getPostsByCategory(slug: string) {
-  if (!isSanityConfigured()) {
-    return [];
-  }
-  try {
-    const posts = await client.fetch(postsByCategoryQuery, { slug });
-    return posts;
-  } catch (error) {
-    console.error('Failed to fetch posts by category:', error);
-    return [];
-  }
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
@@ -43,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
   
-  const category = await getCategory(slug);
+  const category = await getCategoryBySlug(slug);
   
   if (!category) {
     return {
@@ -65,7 +39,7 @@ export default async function CategoryPage({ params }: Props) {
     notFound();
   }
   
-  const category = await getCategory(slug);
+  const category = await getCategoryBySlug(slug);
   const posts = await getPostsByCategory(slug);
 
   if (!category) {

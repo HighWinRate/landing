@@ -1,20 +1,22 @@
 import BlogCard from './BlogCard';
 
 interface Post {
-  _id: string;
+  id: string;
   title: string;
-  slug: { current: string };
+  slug: string;
   publishedAt: string;
   excerpt?: string;
   mainImage?: any;
   author?: {
+    id: string;
     name: string;
-    slug: { current: string };
+    slug: string;
     image?: any;
   };
   categories?: Array<{
+    id: string;
     title: string;
-    slug: { current: string };
+    slug: string;
   }>;
 }
 
@@ -36,7 +38,7 @@ export default function BlogList({ posts }: BlogListProps) {
   return (
     <div className="space-y-8">
       {posts.map((post, index) => (
-        <BlogCard key={post._id} post={post} imagePosition={index % 2 === 0 ? 'right' : 'left'} />
+        <BlogCard key={post.id} post={post} imagePosition={index % 2 === 0 ? 'right' : 'left'} />
       ))}
     </div>
   );

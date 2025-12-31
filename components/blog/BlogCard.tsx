@@ -2,26 +2,47 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { urlFor } from '@/lib/sanity';
 import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+// Helper function to get image URL (client-side safe)
+function getPayloadImageUrl(image: any): string {
+  if (!image) return '';
+  
+  if (typeof image === 'string') {
+    return image;
+  }
+  
+  if (image.url) {
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL || 'http://localhost:3003';
+    return `${baseUrl}${image.url}`;
+  }
+  
+  if (image.filename) {
+    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL || 'http://localhost:3003';
+    return `${baseUrl}/media/${image.filename}`;
+  }
+  
+  return '';
+}
 
 interface Post {
-  _id: string;
+  id: string;
   title: string;
-  slug: { current: string };
+  slug: string;
   publishedAt: string;
   excerpt?: string;
   mainImage?: any;
   author?: {
+    id: string;
     name: string;
-    slug: { current: string };
+    slug: string;
     image?: any;
   };
   categories?: Array<{
+    id: string;
     title: string;
-    slug: { current: string };
+    slug: string;
   }>;
 }
 
@@ -36,16 +57,17 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
     : '';
 
   const isImageLeft = imagePosition === 'left';
+  const mainImageUrl = post.mainImage ? getPayloadImageUrl(post.mainImage) : null;
 
   return (
-    <Link href={`/blog/${post.slug.current}`} className="block w-full">
+    <Link href={`/blog/${post.slug}`} className="block w-full">
       <Card className="w-full hover:shadow-lg transition-shadow group">
         <div className={`flex flex-col md:flex-row ${isImageLeft ? 'md:flex-row-reverse' : ''}`}>
           {/* تصویر */}
-          {post.mainImage && (
+          {mainImageUrl && (
             <div className="relative w-full md:w-2/5 h-64 md:h-64 flex-shrink-0">
               <Image
-                src={urlFor(post.mainImage).width(800).height(500).url()}
+                src={mainImageUrl}
                 alt={post.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -70,8 +92,8 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
                 <div className="flex flex-wrap gap-2 mb-4">
                   {post.categories.map((category) => (
                     <Link
-                      key={category.slug.current}
-                      href={`/blog/category/${category.slug.current}`}
+                      key={category.id || category.slug}
+                      href={`/blog/category/${category.slug}`}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <Badge variant="secondary" className="text-xs">
@@ -86,7 +108,7 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
             <div className="flex items-center justify-between text-sm text-muted-foreground pt-4 border-t">
               {post.author && (
                 <Link
-                  href={`/blog/author/${post.author.slug.current}`}
+                  href={`/blog/author/${post.author.slug}`}
                   className="hover:text-foreground transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >

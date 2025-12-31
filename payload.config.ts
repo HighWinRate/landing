@@ -23,6 +23,10 @@ const getDatabaseConfig = () => {
     return {
       pool: {
         connectionString,
+        // SSL configuration for Supabase
+        ssl: {
+          rejectUnauthorized: false, // Supabase uses self-signed certificates
+        },
       },
     };
   }
@@ -58,9 +62,16 @@ const getDatabaseConfig = () => {
   // If we have all required individual variables, construct connection string
   // Note: password is still required for database connection
   if (host && user && password && database) {
+    // Add SSL parameters to connection string for Supabase
+    const connectionString = `postgresql://${user}:${encodeURIComponent(password)}@${host}:${port}/${database}?sslmode=require`;
+    
     return {
       pool: {
-        connectionString: `postgresql://${user}:${encodeURIComponent(password)}@${host}:${port}/${database}`,
+        connectionString,
+        // SSL configuration for Supabase (additional config)
+        ssl: {
+          rejectUnauthorized: false, // Supabase uses self-signed certificates
+        },
       },
     };
   }
@@ -69,6 +80,9 @@ const getDatabaseConfig = () => {
   return {
     pool: {
       connectionString: '',
+      ssl: {
+        rejectUnauthorized: false,
+      },
     },
   };
 };

@@ -16,6 +16,8 @@ cp env.example.txt .env
 ```env
 # Payload CMS Configuration
 PAYLOAD_SECRET=your-secret-key-here
+# Development: http://localhost:3003
+# Production: https://highwinrate.com
 PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3003
 
 # Database Configuration (Supabase)

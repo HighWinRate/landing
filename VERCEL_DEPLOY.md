@@ -8,7 +8,7 @@
 
 ```env
 PAYLOAD_SECRET=your-generated-secret-key-here
-PAYLOAD_PUBLIC_SERVER_URL=https://your-domain.com
+PAYLOAD_PUBLIC_SERVER_URL=https://highwinrate.com
 ```
 
 **نحوه تولید PAYLOAD_SECRET:**
@@ -150,7 +150,7 @@ Vercel به صورت خودکار از فایل `vercel.json` استفاده م�
 ## ✅ Checklist قبل از Deploy
 
 - [ ] `PAYLOAD_SECRET` تنظیم شده
-- [ ] `PAYLOAD_PUBLIC_SERVER_URL` تنظیم شده (URL کامل production)
+- [ ] `PAYLOAD_PUBLIC_SERVER_URL` تنظیم شده (https://highwinrate.com)
 - [ ] `POSTGRES_PASSWORD` تنظیم شده
 - [ ] `POSTGRES_HOST` یا `SUPABASE_URL` تنظیم شده
 - [ ] `POSTGRES_USER` تنظیم شده (یا default: 'postgres')

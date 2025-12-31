@@ -1,8 +1,11 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionConfig, CollectionBeforeChangeHook, CollectionAfterDeleteHook } from 'payload';
 import { supabaseStorageAdapter } from '../storage/supabase-storage';
 
 // Initialize Supabase Storage Adapter hooks (lazy initialization)
-function getStorageHooks() {
+function getStorageHooks(): {
+  beforeChange: CollectionBeforeChangeHook[];
+  afterDelete: CollectionAfterDeleteHook[];
+} {
   const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
   
@@ -15,12 +18,19 @@ function getStorageHooks() {
     };
   }
   
-  return supabaseStorageAdapter({
+  const hooks = supabaseStorageAdapter({
     supabaseUrl,
     supabaseKey,
     bucket: process.env.SUPABASE_STORAGE_BUCKET || 'media',
   });
+  
+  return {
+    beforeChange: hooks.beforeChange ? [hooks.beforeChange] : [],
+    afterDelete: hooks.afterDelete ? [hooks.afterDelete] : [],
+  };
 }
+
+const storageHooks = getStorageHooks();
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -32,8 +42,8 @@ export const Media: CollectionConfig = {
     disableLocalStorage: true,
   },
   hooks: {
-    beforeChange: [getStorageHooks().beforeChange],
-    afterDelete: [getStorageHooks().afterDelete],
+    beforeChange: storageHooks.beforeChange,
+    afterDelete: storageHooks.afterDelete,
   },
   fields: [
     {

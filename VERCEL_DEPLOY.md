@@ -53,11 +53,13 @@ POSTGRES_DATABASE=postgres
 
 کد به صورت خودکار SSL را برای Supabase تنظیم می‌کند. اما اگر هنوز خطای "self-signed certificate" دارید:
 
-**راه حل اضافی:** می‌توانید این environment variable را اضافه کنید:
+**راه حل اضافی:** می‌توانید این environment variable را در Vercel اضافه کنید:
 
 ```env
-PGSSLMODE=require
+NODE_TLS_REJECT_UNAUTHORIZED=0
 ```
+
+**⚠️ هشدار امنیتی:** این متغیر SSL certificate verification را غیرفعال می‌کند. فقط برای Supabase استفاده کنید و در production مراقب باشید.
 
 ### 4. سایر متغیرها
 

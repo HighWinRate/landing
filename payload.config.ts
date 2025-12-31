@@ -27,10 +27,12 @@ const getDatabaseConfig = () => {
       finalConnectionString = `${connectionString}${separator}sslmode=require`;
     }
     
+    // For Supabase, we need to disable SSL certificate verification
+    // Similar to backend approach: use ssl config in pool (like pg.Client)
     return {
       pool: {
         connectionString: finalConnectionString,
-        // SSL configuration for Supabase - must be in pool config
+        // SSL configuration for Supabase (same as backend pg.Client approach)
         ssl: {
           rejectUnauthorized: false, // Supabase uses self-signed certificates
         },
@@ -72,10 +74,12 @@ const getDatabaseConfig = () => {
     // Add SSL parameters to connection string for Supabase
     const connectionString = `postgresql://${user}:${encodeURIComponent(password)}@${host}:${port}/${database}?sslmode=require`;
     
+    // For Supabase, we need to disable SSL certificate verification
     return {
       pool: {
         connectionString,
-        // SSL configuration for Supabase - must be in pool config
+        // SSL configuration for Supabase
+        // Note: postgresAdapter passes this directly to pg.Pool
         ssl: {
           rejectUnauthorized: false, // Supabase uses self-signed certificates
         },
@@ -98,6 +102,9 @@ const getDatabaseConfig = () => {
 // This allows the build to complete even if secret is not set (for CI/CD)
 const payloadSecret = process.env.PAYLOAD_SECRET || 'dummy-secret-for-build-time-only';
 
+// Get database config with SSL support (same approach as backend)
+const dbConfig = getDatabaseConfig();
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -108,7 +115,7 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(process.cwd(), 'payload-types.ts'),
   },
-  db: postgresAdapter(getDatabaseConfig()),
+  db: postgresAdapter(dbConfig),
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3003',
   cors: [
     process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3003',

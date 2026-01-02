@@ -1,11 +1,10 @@
-import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/payload';
+import { getPostBySlug, getAllPostSlugs, getRelatedPosts, getImageUrl } from '@/lib/blog';
 import BlogPost from '@/components/blog/BlogPost';
 import RelatedPosts from '@/components/blog/RelatedPosts';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import type { Metadata } from 'next';
-import { getPayloadImageUrl } from '@/lib/payload';
 
 // Enable dynamic rendering for new posts (render at request time)
 export const dynamic = 'force-dynamic';
@@ -15,23 +14,12 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  // Skip if PAYLOAD_SECRET is not set (for build time)
-  if (!process.env.PAYLOAD_SECRET) {
-    console.warn('PAYLOAD_SECRET is not set. Skipping static params generation.');
-    return [];
-  }
-
   try {
     const slugs = await getAllPostSlugs();
-    return slugs.map((item: any) => ({
+    return slugs.map((item) => ({
       slug: item.slug,
-    })).filter((p: any) => p.slug);
-  } catch (error: any) {
-    // If it's a secret error, return empty array to allow build to continue
-    if (error?.payloadInitError || error?.message?.includes('secret')) {
-      console.warn('Payload not configured. Skipping static params generation.');
-      return [];
-    }
+    })).filter((p) => p.slug);
+  } catch (error) {
     console.warn('Failed to fetch post slugs:', error);
     return [];
   }
@@ -58,8 +46,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = post.seo?.metaTitle || post.title;
   const description = post.seo?.metaDescription || post.excerpt || 'مقالات و راهنماهای کاربردی در زمینه معاملات';
   
-  // ساخت URL تصویر از Payload
-  const image = post.mainImage ? getPayloadImageUrl(post.mainImage) : undefined;
+  // ساخت URL تصویر
+  const image = post.mainImage ? getImageUrl(post.mainImage) : undefined;
   
   const url = `https://highwinrate.com/blog/${slug}`;
 

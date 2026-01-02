@@ -7,31 +7,11 @@ import { Separator } from '@/components/ui/separator';
 import { calculateReadingTime, formatReadingTime } from '@/lib/blog-utils';
 import { Clock } from 'lucide-react';
 import LexicalRenderer from './LexicalRenderer';
-// Helper function to get image URL (client-side safe)
-function getPayloadImageUrl(image: any): string {
+// Helper function to get image URL
+function getImageUrl(image: any): string {
   if (!image) return '';
-
-  if (typeof image === 'string') {
-    return image;
-  }
-
-  if (image.url) {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL ||
-      process.env.PAYLOAD_PUBLIC_SERVER_URL ||
-      'http://localhost:3003';
-    return `${baseUrl}${image.url}`;
-  }
-
-  if (image.filename) {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL ||
-      process.env.PAYLOAD_PUBLIC_SERVER_URL ||
-      'http://localhost:3003';
-    return `${baseUrl}/media/${image.filename}`;
-  }
-
-  return '';
+  if (typeof image === 'string') return image;
+  return image.url || '';
 }
 
 interface Post {
@@ -75,10 +55,10 @@ export default function BlogPost({ post }: BlogPostProps) {
   const readingTimeText = formatReadingTime(readingTime);
 
   const mainImageUrl = post.mainImage
-    ? getPayloadImageUrl(post.mainImage)
+    ? getImageUrl(post.mainImage)
     : null;
   const authorImageUrl = post.author?.image
-    ? getPayloadImageUrl(post.author.image)
+    ? getImageUrl(post.author.image)
     : null;
 
   return (

@@ -1,4 +1,4 @@
-import { getCategoryBySlug, getPostsByCategory } from '@/lib/payload';
+import { getCategoryBySlug, getPostsByCategory } from '@/lib/blog';
 import BlogList from '@/components/blog/BlogList';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';

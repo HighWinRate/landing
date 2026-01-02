@@ -1,7 +1,6 @@
-import { getAuthorBySlug, getPostsByAuthor } from '@/lib/payload';
+import { getAuthorBySlug, getPostsByAuthor, getImageUrl } from '@/lib/blog';
 import BlogList from '@/components/blog/BlogList';
 import { notFound } from 'next/navigation';
-import { getPayloadImageUrl } from '@/lib/payload';
 import Image from 'next/image';
 import LexicalRenderer from '@/components/blog/LexicalRenderer';
 import type { Metadata } from 'next';
@@ -49,7 +48,7 @@ export default async function AuthorPage({ params }: Props) {
     notFound();
   }
   
-  const authorImageUrl = author.image ? getPayloadImageUrl(author.image) : null;
+  const authorImageUrl = author.image ? getImageUrl(author.image) : null;
 
   return (
     <div className="min-h-screen bg-background">

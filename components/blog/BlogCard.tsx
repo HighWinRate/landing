@@ -5,25 +5,11 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-// Helper function to get image URL (client-side safe)
-function getPayloadImageUrl(image: any): string {
+// Helper function to get image URL
+function getImageUrl(image: any): string {
   if (!image) return '';
-  
-  if (typeof image === 'string') {
-    return image;
-  }
-  
-  if (image.url) {
-    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL || 'http://localhost:3003';
-    return `${baseUrl}${image.url}`;
-  }
-  
-  if (image.filename) {
-    const baseUrl = process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL || 'http://localhost:3003';
-    return `${baseUrl}/media/${image.filename}`;
-  }
-  
-  return '';
+  if (typeof image === 'string') return image;
+  return image.url || '';
 }
 
 interface Post {
@@ -57,7 +43,7 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
     : '';
 
   const isImageLeft = imagePosition === 'left';
-  const mainImageUrl = post.mainImage ? getPayloadImageUrl(post.mainImage) : null;
+  const mainImageUrl = post.mainImage ? getImageUrl(post.mainImage) : null;
 
   return (
     <Link href={`/blog/${post.slug}`} className="block w-full">

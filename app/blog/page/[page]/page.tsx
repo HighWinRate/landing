@@ -1,4 +1,4 @@
-import { getPosts } from '@/lib/payload';
+import { getPosts } from '@/lib/blog';
 import BlogList from '@/components/blog/BlogList';
 import Pagination from '@/components/blog/Pagination';
 import { notFound } from 'next/navigation';
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     'مقالات و راهنماهای کاربردی در زمینه معاملات و استراتژی‌های معاملاتی',
 };
 
-// Force dynamic rendering to always get fresh data from Payload
+// Force dynamic rendering to always get fresh data
 export const dynamic = 'force-dynamic';
 
 const POSTS_PER_PAGE = 6;

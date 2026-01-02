@@ -1,0 +1,345 @@
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client for reading blog data
+const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  db: {
+    schema: 'blog',
+  },
+});
+
+// Types based on Payload CMS collections
+export interface Author {
+  id: string;
+  name: string;
+  slug: string;
+  image?: Media | string;
+  bio?: any; // Rich text content
+  socialLinks?: {
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+    website?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Category {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  parent?: Category | string;
+  color?: string;
+  icon?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Media {
+  id: string;
+  url: string;
+  filename: string;
+  alt?: string;
+  caption?: string;
+  folder?: string;
+  width?: number;
+  height?: number;
+  sizes?: {
+    thumbnail?: { url: string };
+    card?: { url: string };
+    hero?: { url: string };
+  };
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  author: Author | string;
+  mainImage?: Media | string;
+  excerpt?: string;
+  body: any; // Rich text content
+  categories?: (Category | string)[];
+  tags?: { tag: string }[];
+  relatedPosts?: (Post | string)[];
+  status: 'draft' | 'published' | 'scheduled';
+  publishedAt?: string;
+  featured?: boolean;
+  readingTime?: number;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: { keyword: string }[];
+    ogImage?: Media | string;
+    noIndex?: boolean;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Helper to get image URL from Media object
+export function getImageUrl(image: Media | string | undefined | null): string {
+  if (!image) return '';
+  if (typeof image === 'string') return image;
+  return image.url || '';
+}
+
+// Get published posts with pagination
+export async function getPosts(page: number = 1, limit: number = 6): Promise<{
+  posts: Post[];
+  total: number;
+  totalPages: number;
+}> {
+  const offset = (page - 1) * limit;
+
+  // Get total count
+  const { count } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'published');
+
+  // Get posts with related data
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      author:authors(*),
+      mainImage:media(*),
+      categories(*)
+    `)
+    .eq('status', 'published')
+    .order('publishedAt', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (error) {
+    console.error('Error fetching posts:', error);
+    return { posts: [], total: 0, totalPages: 0 };
+  }
+
+  const total = count || 0;
+  const totalPages = Math.ceil(total / limit);
+
+  return {
+    posts: (posts as Post[]) || [],
+    total,
+    totalPages,
+  };
+}
+
+// Get a single post by slug
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      author:authors(*),
+      mainImage:media(*),
+      categories(*),
+      seo_ogImage:media(*)
+    `)
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .limit(1);
+
+  if (error || !posts || posts.length === 0) {
+    console.error('Error fetching post:', error);
+    return null;
+  }
+
+  return posts[0] as Post;
+}
+
+// Get all post slugs for static generation
+export async function getAllPostSlugs(): Promise<{ slug: string }[]> {
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select('slug')
+    .eq('status', 'published');
+
+  if (error) {
+    console.error('Error fetching post slugs:', error);
+    return [];
+  }
+
+  return (posts || []).map((post) => ({ slug: post.slug }));
+}
+
+// Get all categories
+export async function getCategories(): Promise<Category[]> {
+  const { data: categories, error } = await supabase
+    .from('categories')
+    .select('*')
+    .order('title', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+
+  return (categories as Category[]) || [];
+}
+
+// Get category by slug
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  const { data: categories, error } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('slug', slug)
+    .limit(1);
+
+  if (error || !categories || categories.length === 0) {
+    console.error('Error fetching category:', error);
+    return null;
+  }
+
+  return categories[0] as Category;
+}
+
+// Get posts by category
+export async function getPostsByCategory(categorySlug: string): Promise<Post[]> {
+  // First get the category ID
+  const category = await getCategoryBySlug(categorySlug);
+  if (!category) return [];
+
+  // Payload uses a junction table for many-to-many relationships
+  // The table is named: posts_categories (or similar based on Payload's naming)
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      author:authors(*),
+      mainImage:media(*),
+      categories!inner(*)
+    `)
+    .eq('status', 'published')
+    .eq('categories.id', category.id)
+    .order('publishedAt', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching posts by category:', error);
+    return [];
+  }
+
+  return (posts as Post[]) || [];
+}
+
+// Get all authors
+export async function getAuthors(): Promise<Author[]> {
+  const { data: authors, error } = await supabase
+    .from('authors')
+    .select(`
+      *,
+      image:media(*)
+    `)
+    .order('name', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching authors:', error);
+    return [];
+  }
+
+  return (authors as Author[]) || [];
+}
+
+// Get author by slug
+export async function getAuthorBySlug(slug: string): Promise<Author | null> {
+  const { data: authors, error } = await supabase
+    .from('authors')
+    .select(`
+      *,
+      image:media(*)
+    `)
+    .eq('slug', slug)
+    .limit(1);
+
+  if (error || !authors || authors.length === 0) {
+    console.error('Error fetching author:', error);
+    return null;
+  }
+
+  return authors[0] as Author;
+}
+
+// Get posts by author
+export async function getPostsByAuthor(authorSlug: string): Promise<Post[]> {
+  // First get the author
+  const author = await getAuthorBySlug(authorSlug);
+  if (!author) return [];
+
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      author:authors(*),
+      mainImage:media(*),
+      categories(*)
+    `)
+    .eq('status', 'published')
+    .eq('author', author.id)
+    .order('publishedAt', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching posts by author:', error);
+    return [];
+  }
+
+  return (posts as Post[]) || [];
+}
+
+// Get related posts
+export async function getRelatedPosts(
+  currentPostId: string,
+  categoryIds: string[],
+  limit: number = 3
+): Promise<Post[]> {
+  if (categoryIds.length === 0) return [];
+
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      author:authors(*),
+      mainImage:media(*),
+      categories!inner(*)
+    `)
+    .eq('status', 'published')
+    .neq('id', currentPostId)
+    .in('categories.id', categoryIds)
+    .order('publishedAt', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching related posts:', error);
+    return [];
+  }
+
+  return (posts as Post[]) || [];
+}
+
+// Get featured posts
+export async function getFeaturedPosts(limit: number = 3): Promise<Post[]> {
+  const { data: posts, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      author:authors(*),
+      mainImage:media(*),
+      categories(*)
+    `)
+    .eq('status', 'published')
+    .eq('featured', true)
+    .order('publishedAt', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching featured posts:', error);
+    return [];
+  }
+
+  return (posts as Post[]) || [];
+}
+

@@ -1,4 +1,4 @@
-import { getPosts } from '@/lib/payload';
+import { getPosts } from '@/lib/blog';
 import BlogList from '@/components/blog/BlogList';
 import Pagination from '@/components/blog/Pagination';
 import type { Metadata } from 'next';

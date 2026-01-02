@@ -2,10 +2,17 @@ import type { NextConfig } from "next";
 import { withPayload } from '@payloadcms/next/withPayload';
 
 const nextConfig: NextConfig = {
-  // Blog is now integrated in landing (monorepo) and uses Payload CMS
+  // Blog reads data from Supabase (managed by blog-admin)
   images: {
     remotePatterns: [
-      // Add your image domains here if needed
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.in',
+      },
     ],
   },
   // Exclude Node.js modules from client bundle

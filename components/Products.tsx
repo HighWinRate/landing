@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { apiClient, Product } from '@/lib/api';
+import { getActiveProducts, LandingProduct } from '@/lib/data/products';
+import { getPublicStorageUrl } from '@/lib/storage';
 import { FRONTEND_URLS } from '@/lib/constants';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<LandingProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,27 +20,13 @@ export default function Products() {
       try {
         setLoading(true);
         setError(null);
-        console.log(
-          'Fetching products from:',
-          process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-        );
-        const data = await apiClient.getProducts();
-        console.log('Products received:', data);
-        // فقط محصولات فعال را نمایش بده
-        const activeProducts = data
-          .filter((p) => p.is_active !== false)
-          .slice(0, 6);
-        console.log('Active products:', activeProducts);
-        setProducts(activeProducts);
+        const data = await getActiveProducts();
+        setProducts(data);
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'خطا در بارگذاری محصولات';
         setError(errorMessage);
-        console.error('Error fetching products:', err);
-        console.error('Error details:', {
-          message: err instanceof Error ? err.message : String(err),
-          stack: err instanceof Error ? err.stack : undefined,
-        });
+        console.error('Error fetching landing products:', err);
       } finally {
         setLoading(false);
       }
@@ -52,11 +39,16 @@ export default function Products() {
     return new Intl.NumberFormat('fa-IR').format(price);
   };
 
-  const getThumbnailUrl = (product: Product) => {
-    if (product.thumbnail) {
-      return apiClient.getProductThumbnailUrl(product.id);
+  const getThumbnailUrl = (product: LandingProduct) => {
+    if (!product.thumbnail) {
+      return null;
     }
-    return null;
+
+    if (product.thumbnail.startsWith('http')) {
+      return product.thumbnail;
+    }
+
+    return getPublicStorageUrl('thumbnails', product.thumbnail) ?? product.thumbnail;
   };
 
   if (loading) {

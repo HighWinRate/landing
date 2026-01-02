@@ -1,63 +1,43 @@
-# راهنمای سریع رفع مشکل CORS
+# راهنمای سریع حل مشکل نمایش محصولات
 
 ## مشکل: محصولات در Landing نمایش داده نمی‌شوند
 
 ### علت
 
-Backend فقط به originهای مشخص شده در `FRONTEND_URL` اجازه دسترسی می‌دهد. Landing در پورت 3003 اجرا می‌شود اما در `FRONTEND_URL` نیست.
+- متغیرهای `NEXT_PUBLIC_SUPABASE_URL` یا `NEXT_PUBLIC_SUPABASE_ANON_KEY` تنظیم نشده‌اند.
+- جدول `products` داده فعال ندارد (`is_active=false` یا ردیفی موجود نیست).
+- thumbnail به bucket `thumbnails` اشاره نمی‌کند یا فایل حذف شده است.
 
 ### راه‌حل سریع
 
-1. **فایل `.env` در Backend را باز کنید**:
-
-   ```bash
-   cd backend
-   nano .env
-   # یا
-   code .env
-   ```
-
-2. **`FRONTEND_URL` را به‌روزرسانی کنید**:
+1. فایل `.env` لندینگ را باز کنید و مقادیر زیر را تنظیم کنید:
 
    ```env
-   FRONTEND_URL=http://localhost:3001,http://localhost:3002,http://localhost:3003
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
    ```
 
-3. **Backend را restart کنید**:
+2. در داشبورد Supabase، جدول `products` را بررسی کنید و مطمئن شوید حداقل یک ردیف `is_active=true` دارد.
 
-   ```bash
-   # اگر با npm run start:dev اجرا می‌کنید
-   # Ctrl+C برای توقف
-   npm run start:dev
+3. اگر تصویر thumbnail نمایش داده نمی‌شود، مسیر آن در bucket `thumbnails` را بررسی کنید و در صورت نیاز آن را دوباره آپلود کنید.
 
-   # یا اگر با ./start-dev.sh اجرا می‌کنید
-   ./start-dev.sh
-   ```
-
-4. **Landing را refresh کنید** (F5)
+4. Landing را ری‌استارت کنید (Ctrl+C و `npm run dev`).
 
 ### بررسی
 
-بعد از restart، در Console مرورگر (F12) باید لاگ‌های زیر را ببینید:
-
-- `[API] Fetching: http://localhost:3000/product`
-- `[API] Response status: 200 OK`
-- `[API] Response data: [...]`
-
-### اگر هنوز کار نکرد
-
-1. **بررسی کنید که Backend در حال اجرا است**:
+1. با `curl` درخواست ساده به REST API بفرستید:
 
    ```bash
-   curl http://localhost:3000/health
+   curl -H "apikey: your-anon-key" \
+        -H "Authorization: Bearer your-anon-key" \
+        "https://your-project.supabase.co/rest/v1/products?select=id,title&limit=1"
    ```
 
-2. **بررسی کنید که Landing در حال اجرا است**:
+   پاسخ باید لیستی از محصولات فعال را برگرداند.
 
-   ```bash
-   curl http://localhost:3003
-   ```
+2. در Console مرورگر (F12)، دنبال لاگ‌هایی باشید که از `landing/lib/data/products.ts` نشأت می‌گیرند و مطمئن شوید خطایی مثل `401` یا `403` وجود ندارد.
 
-3. **Console مرورگر را بررسی کنید** (F12 > Console)
+3. در تب Network، درخواست `rest/v1/products` را بررسی کنید، status code و هدرها را ببینید.
 
-4. **Network Tab را بررسی کنید** (F12 > Network > product)
+اگر هنوز مشکل حل نشد، مطمئن شوید Supabase پروژه‌تان محدودیتی برای Origin ندارد و از `https://` استفاده می‌کنید.
+

@@ -29,7 +29,7 @@ npm run dev
 
 - ✅ طراحی مدرن و حرفه‌ای
 - ✅ پشتیبانی از Dark Mode (با next-themes)
-- ✅ نمایش محصولات از Backend
+- ✅ نمایش محصولات از Supabase (جدول `products`)
 - ✅ Blog integrated (Payload CMS with Supabase)
 - ✅ کاملاً Responsive
 - ✅ بهینه‌سازی شده برای SEO
@@ -42,11 +42,12 @@ npm run dev
 فایل `.env` را ایجاد کنید و متغیرهای زیر را تنظیم کنید:
 
 ```env
-# Backend API URL
-NEXT_PUBLIC_API_URL=http://localhost:3000
-
 # Frontend URL (برای لینک‌های ورود/ثبت‌نام/محصولات)
 NEXT_PUBLIC_FRONTEND_URL=http://localhost:3001
+
+# Supabase (public)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
 # Payload CMS Configuration (برای Blog)
 PAYLOAD_SECRET=your-secret-key-here
@@ -58,8 +59,9 @@ POSTGRES_URL=postgresql://user:password@host:port/database
 در Vercel یا platform deploy، این environment variables را تنظیم کنید:
 
 ```env
-NEXT_PUBLIC_API_URL=https://api.highwinrate.com
 NEXT_PUBLIC_FRONTEND_URL=https://app.highwinrate.com
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 PAYLOAD_SECRET=your-secret-key-here
 PAYLOAD_PUBLIC_SERVER_URL=https://highwinrate.com
 POSTGRES_URL=postgresql://user:password@host:port/database
@@ -186,15 +188,15 @@ Frontend اصلی صفحه اصلی خودش (`/`) را به Landing Page redire
 ## 📝 نکات مهم
 
 1. **جدا بودن از Frontend**: لندینگ پیج کاملاً مستقل است و تغییرات آن روی frontend اصلی تأثیری ندارد
-2. **API Connection**: لندینگ پیج به Backend API در پورت 3000 متصل می‌شود
+2. **Supabase Connection**: لندینگ مستقیماً از جدول `products` و bucket `thumbnails` Supabase داده می‌خواند
 3. **Dark Mode**: پشتیبانی کامل از Dark Mode با next-themes (system preference + manual toggle)
 4. **Blog**: Blog integrated شده در `/blog` route (Payload CMS with Supabase)
-4. **CORS**: مطمئن شوید که `FRONTEND_URL` در Backend شامل `http://localhost:3003` است
-5. **لینک‌ها**:
+5. **CORS**: Supabase به صورت پیش‌فرض CORS را مدیریت می‌کند؛ فقط مطمئن شوید `NEXT_PUBLIC_SUPABASE_URL` بدون `/` انتهایی وارد شده است
+6. **لینک‌ها**:
    - Landing همیشه به Frontend (3001) برای عملیات کاربری لینک می‌شود
    - Frontend صفحه اصلی به Landing (3003) redirect می‌شود
    - این یک جریان دو طرفه است برای تجربه کاربری بهتر
-6. **مشکلات UI**: برای مشکلات UI/UX به [landing-guide.md](../docs/landing-guide.md) مراجعه کنید
+7. **مشکلات UI**: برای مشکلات UI/UX به [landing-guide.md](../docs/landing-guide.md) مراجعه کنید
 
 ## 🛠️ دستورات
 

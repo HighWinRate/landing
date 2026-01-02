@@ -10,9 +10,9 @@ export async function POST(request: Request) {
     const authHeader = request.headers.get('authorization');
     const expectedToken = process.env.MIGRATION_TOKEN;
     
-    if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
+    if (!expectedToken || authHeader !== `Bearer ${expectedToken}`) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized. Please set MIGRATION_TOKEN in environment variables.' },
         { status: 401 }
       );
     }

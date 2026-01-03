@@ -67,20 +67,24 @@ export interface Post {
   author?: Author | null;
   mainImage?: Media | string;
   excerpt?: string;
-  body: any; // Rich text content
+  content: any; // Rich text content (Lexical JSON)
+  body?: any; // Alias for backwards compatibility
   categories?: Category[];
   tags?: { tag: string }[];
   relatedPosts?: (Post | string)[];
   status: 'draft' | 'published' | 'scheduled';
   publishedAt?: string;
+  published_date?: string; // DB field name
   featured?: boolean;
   readingTime?: number;
+  viewCount?: number;
   seo?: {
     metaTitle?: string;
     metaDescription?: string;
     keywords?: { keyword: string }[];
     ogImage?: Media | string;
     noIndex?: boolean;
+    noFollow?: boolean;
   };
   createdAt: string;
   updatedAt: string;
@@ -148,24 +152,38 @@ export async function getPosts(
   }
 
   // Map data to our Post interface
-  const posts = (data || []).map((post: any) => ({
-    ...post,
-    publishedAt: post.published_date,
-    mainImage: post.mainImage,
-    author: post.author
-      ? {
-          ...post.author,
-          name: post.author.name || post.author.email, // Fallback to email
-        }
-      : null,
-    categories:
-      post.categories
-        ?.map((rel: any) => ({
-          ...rel.categories,
-          title: rel.categories?.name, // Map name to title
-        }))
-        .filter((c: any) => c.id) || [],
-  }));
+  const posts = (data || []).map((post: any) => {
+    // Parse content if it's a JSON string
+    let contentData = post.content;
+    if (typeof contentData === 'string') {
+      try {
+        contentData = JSON.parse(contentData);
+      } catch (e) {
+        console.error('Error parsing content data:', e);
+      }
+    }
+
+    return {
+      ...post,
+      publishedAt: post.published_date || post.publishedAt,
+      mainImage: post.mainImage,
+      content: contentData,
+      body: contentData, // Alias for backwards compatibility
+      author: post.author
+        ? {
+            ...post.author,
+            name: post.author.name || post.author.email, // Fallback to email
+          }
+        : null,
+      categories:
+        post.categories
+          ?.map((rel: any) => ({
+            ...rel.categories,
+            title: rel.categories?.name, // Map name to title
+          }))
+          .filter((c: any) => c.id) || [],
+    };
+  });
 
   const total = count || 0;
   const totalPages = Math.ceil(total / limit);
@@ -200,10 +218,36 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   }
 
   const post = posts[0] as any;
+
+  // Parse content if it's a JSON string
+  let contentData = post.content;
+  if (typeof contentData === 'string') {
+    try {
+      contentData = JSON.parse(contentData);
+    } catch (e) {
+      console.error('Error parsing content data:', e);
+    }
+  }
+
+  // Parse SEO data if it's a JSON string
+  let seoData = post.seo;
+  if (typeof seoData === 'string') {
+    try {
+      seoData = JSON.parse(seoData);
+    } catch (e) {
+      console.error('Error parsing SEO data:', e);
+    }
+  }
+
   return {
     ...post,
-    publishedAt: post.published_date,
+    publishedAt: post.published_date || post.publishedAt,
     mainImage: post.mainImage,
+    content: contentData,
+    body: contentData, // Alias for backwards compatibility
+    readingTime: post.readingTime || post.reading_time,
+    viewCount: post.viewCount || post.view_count,
+    seo: seoData,
     author: post.author
       ? {
           ...post.author,

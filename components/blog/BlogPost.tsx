@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { calculateReadingTime, formatReadingTime } from '@/lib/blog-utils';
 import { Clock } from 'lucide-react';
-import LexicalRenderer from './LexicalRenderer';
+import ContentRenderer from './ContentRenderer';
+
 // Helper function to get image URL
 function getImageUrl(image: any): string {
   if (!image) return '';
@@ -21,7 +22,9 @@ interface Post {
   publishedAt?: string;
   excerpt?: string;
   mainImage?: any;
-  body: any;
+  content?: any; // Lexical JSON content
+  body?: any; // Backwards compatibility
+  readingTime?: number;
   author?:
     | {
         id: string;
@@ -52,8 +55,10 @@ export default function BlogPost({ post }: BlogPostProps) {
   const publishedDate = post.publishedAt
     ? format(new Date(post.publishedAt), 'd MMMM yyyy')
     : '';
-  // For Lexical, we'll estimate reading time based on text content
-  const readingTime = post.body ? 5 : 1; // Default estimate, can be improved
+  
+  // Use stored reading time or calculate estimate
+  const content = post.content || post.body;
+  const readingTime = post.readingTime || (content ? 5 : 1);
   const readingTimeText = formatReadingTime(readingTime);
 
   const mainImageUrl = post.mainImage
@@ -142,7 +147,7 @@ export default function BlogPost({ post }: BlogPostProps) {
 
         <CardContent className="px-6 py-8">
           <article className="max-w-none">
-            {post.body && <LexicalRenderer data={post.body} />}
+            <ContentRenderer content={content} />
           </article>
         </CardContent>
 
@@ -172,7 +177,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                   </div>
                   {post.author.bio && (
                     <div className="mt-2 text-sm text-muted-foreground prose prose-sm dark:prose-invert max-w-none">
-                      <LexicalRenderer data={post.author.bio} />
+                      <ContentRenderer content={post.author.bio} />
                     </div>
                   )}
                   {post.author.socialLinks && (

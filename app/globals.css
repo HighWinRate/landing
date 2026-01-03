@@ -57,12 +57,11 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
 
-@layer base {
   * {
     border-color: hsl(var(--border));
   }
+  
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
@@ -73,47 +72,112 @@ html {
   scroll-behavior: smooth;
 }
 
-:root {
-  --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+/* Substack-style Blog Typography */
+.rich-text-content {
+  color: hsl(var(--foreground) / 0.9);
+  font-family: Georgia, 'Times New Roman', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.dark {
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+/* Better font rendering for RTL */
+.rich-text-content[dir='rtl'] {
+  font-family: 'Noto Serif', 'Vazir', Georgia, serif;
 }
 
-@theme inline {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+/* Smooth scrolling for anchors */
+.rich-text-content a[id] {
+  scroll-margin-top: 6rem;
 }
 
-@layer base {
-  * {
-    border-color: hsl(var(--border));
-  }
-  body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-  }
+/* Selection color */
+.rich-text-content ::selection {
+  background-color: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+/* First paragraph drop cap (optional) */
+.rich-text-content > p:first-of-type::first-letter {
+  font-size: 3rem;
+  font-weight: 700;
+  float: right;
+  line-height: 1;
+  margin-right: 0.5rem;
+  color: hsl(var(--primary));
+}
+
+/* Better list item spacing */
+.rich-text-content li > p {
+  margin-bottom: 0.5rem;
+}
+
+/* Nested lists */
+.rich-text-content ul ul,
+.rich-text-content ol ol,
+.rich-text-content ul ol,
+.rich-text-content ol ul {
+  margin-top: 0.5rem;
+  margin-right: 1rem;
+}
+
+/* Code blocks with better scrolling */
+.rich-text-content pre {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
+}
+
+.rich-text-content pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.rich-text-content pre::-webkit-scrollbar-track {
+  background-color: hsl(var(--muted));
+}
+
+.rich-text-content pre::-webkit-scrollbar-thumb {
+  border-radius: 0.5rem;
+  background-color: hsl(var(--muted-foreground) / 0.3);
+}
+
+.rich-text-content pre::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Better figure spacing */
+.rich-text-content figure {
+  max-width: 100%;
+}
+
+/* Responsive images */
+.rich-text-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Table styling (if needed) */
+.rich-text-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.rich-text-content th,
+.rich-text-content td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem 1rem;
+  text-align: left;
+}
+
+.rich-text-content th {
+  background-color: hsl(var(--muted));
+  font-weight: 600;
+}
+
+/* Better focus states for accessibility */
+.rich-text-content a:focus,
+.rich-text-content button:focus {
+  outline-width: 2px;
+  outline-offset: 2px;
+  outline-color: hsl(var(--primary));
 }

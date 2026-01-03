@@ -103,11 +103,11 @@ export default function BlogPost({ post }: BlogPostProps) {
             )}
             {publishedDate && (
               <>
-                <span className="text-muted-foreground/50">•</span>
+                <span style={{ color: 'hsl(var(--muted-foreground) / 0.5)' }}>•</span>
                 <time dateTime={post.publishedAt}>{publishedDate}</time>
               </>
             )}
-            <span className="text-muted-foreground/50">•</span>
+            <span style={{ color: 'hsl(var(--muted-foreground) / 0.5)' }}>•</span>
             <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />
               <span>{readingTimeText} مطالعه</span>
@@ -124,7 +124,7 @@ export default function BlogPost({ post }: BlogPostProps) {
                 >
                   <Badge
                     variant="secondary"
-                    className="hover:bg-secondary/80 transition-colors"
+                    className="transition-colors hover:opacity-80"
                   >
                     {category.title}
                   </Badge>
@@ -145,8 +145,8 @@ export default function BlogPost({ post }: BlogPostProps) {
           </div>
         )}
 
-        <CardContent className="px-6 py-8">
-          <article className="max-w-none">
+        <CardContent className="px-6 lg:px-12 py-8">
+          <article className="max-w-none" dir="auto">
             <ContentRenderer content={content} />
           </article>
         </CardContent>

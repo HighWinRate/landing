@@ -1,26 +1,29 @@
 'use client';
 
 import React from 'react';
-import LexicalRenderer from './LexicalRenderer';
+import RichTextRenderer from './RichTextRenderer';
 
 interface ContentRendererProps {
   content: any;
+  debug?: boolean;
 }
 
-export default function ContentRenderer({ content }: ContentRendererProps) {
+export default function ContentRenderer({ content, debug = false }: ContentRendererProps) {
   // Debug info
   const contentType = typeof content;
   const isNull = content === null;
   const isUndefined = content === undefined;
   const hasRoot = content && typeof content === 'object' && 'root' in content;
 
-  console.log('ContentRenderer Debug:', {
-    contentType,
-    isNull,
-    isUndefined,
-    hasRoot,
-    content: content ? JSON.stringify(content).slice(0, 200) : 'no content',
-  });
+  if (debug) {
+    console.log('ContentRenderer Debug:', {
+      contentType,
+      isNull,
+      isUndefined,
+      hasRoot,
+      content: content ? JSON.stringify(content).slice(0, 200) : 'no content',
+    });
+  }
 
   if (!content) {
     return (
@@ -28,10 +31,12 @@ export default function ContentRenderer({ content }: ContentRendererProps) {
         <p className="text-sm text-yellow-800 dark:text-yellow-200">
           ⚠️ محتوایی برای نمایش وجود ندارد
         </p>
-        <p className="text-xs text-muted-foreground mt-2">
-          Type: {contentType} | Null: {isNull ? 'Yes' : 'No'} | Undefined:{' '}
-          {isUndefined ? 'Yes' : 'No'}
-        </p>
+        {debug && (
+          <p className="text-xs text-muted-foreground mt-2">
+            Type: {contentType} | Null: {isNull ? 'Yes' : 'No'} | Undefined:{' '}
+            {isUndefined ? 'Yes' : 'No'}
+          </p>
+        )}
       </div>
     );
   }
@@ -42,9 +47,11 @@ export default function ContentRenderer({ content }: ContentRendererProps) {
         <p className="text-sm text-red-800 dark:text-red-200">
           ⚠️ محتوا به صورت رشته است و باید parse شود
         </p>
-        <pre className="text-xs mt-2 overflow-auto max-h-32">
-          {content.slice(0, 500)}
-        </pre>
+        {debug && (
+          <pre className="text-xs mt-2 overflow-auto max-h-32">
+            {content.slice(0, 500)}
+          </pre>
+        )}
       </div>
     );
   }
@@ -55,15 +62,17 @@ export default function ContentRenderer({ content }: ContentRendererProps) {
         <p className="text-sm text-orange-800 dark:text-orange-200">
           ⚠️ ساختار Lexical معتبر نیست (root موجود نیست)
         </p>
-        <pre className="text-xs mt-2 overflow-auto max-h-32">
-          {JSON.stringify(content, null, 2).slice(0, 500)}
-        </pre>
+        {debug && (
+          <pre className="text-xs mt-2 overflow-auto max-h-32">
+            {JSON.stringify(content, null, 2).slice(0, 500)}
+          </pre>
+        )}
       </div>
     );
   }
 
   try {
-    return <LexicalRenderer data={content} />;
+    return <RichTextRenderer data={content} />;
   } catch (error) {
     console.error('Error rendering Lexical content:', error);
     return (

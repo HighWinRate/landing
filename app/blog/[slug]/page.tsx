@@ -1,4 +1,9 @@
-import { getPostBySlug, getAllPostSlugs, getRelatedPosts, getImageUrl } from '@/lib/blog';
+import {
+  getPostBySlug,
+  getAllPostSlugs,
+  getRelatedPosts,
+  getImageUrl,
+} from '@/lib/blog';
 import BlogPost from '@/components/blog/BlogPost';
 import RelatedPosts from '@/components/blog/RelatedPosts';
 import { notFound } from 'next/navigation';
@@ -16,9 +21,11 @@ type Props = {
 export async function generateStaticParams() {
   try {
     const slugs = await getAllPostSlugs();
-    return slugs.map((item) => ({
-      slug: item.slug,
-    })).filter((p) => p.slug);
+    return slugs
+      .map((item) => ({
+        slug: item.slug,
+      }))
+      .filter((p) => p.slug);
   } catch (error) {
     console.warn('Failed to fetch post slugs:', error);
     return [];
@@ -27,16 +34,19 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const slug = typeof resolvedParams.slug === 'string' ? resolvedParams.slug : resolvedParams.slug?.[0] || '';
-  
+  const slug =
+    typeof resolvedParams.slug === 'string'
+      ? resolvedParams.slug
+      : resolvedParams.slug?.[0] || '';
+
   if (!slug) {
     return {
       title: 'پست یافت نشد',
     };
   }
-  
+
   const post = await getPostBySlug(slug);
-  
+
   if (!post) {
     return {
       title: 'پست یافت نشد',
@@ -44,12 +54,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const title = post.seo?.metaTitle || post.title;
-  const description = post.seo?.metaDescription || post.excerpt || 'مقالات و راهنماهای کاربردی در زمینه معاملات';
-  
+  const description =
+    post.seo?.metaDescription ||
+    post.excerpt ||
+    'مقالات و راهنماهای کاربردی در زمینه معاملات';
+
   // ساخت URL تصویر
   const image = post.mainImage ? getImageUrl(post.mainImage) : undefined;
-  
+
   const url = `https://highwinrate.com/blog/${slug}`;
+
+  const authorNames = post.author?.name
+    ? [post.author.name]
+    : post.author?.slug
+      ? [post.author.slug]
+      : [];
 
   return {
     title,
@@ -60,11 +79,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       url,
       siteName: 'High Win Rate',
-      images: image ? [{ url: image, width: 1200, height: 600, alt: post.title }] : [],
+      images: image
+        ? [{ url: image, width: 1200, height: 600, alt: post.title }]
+        : [],
       locale: 'fa_IR',
       type: 'article',
       publishedTime: post.publishedAt,
-      authors: post.author ? [post.author.name] : [],
+      authors: authorNames,
     },
     twitter: {
       card: 'summary_large_image',
@@ -80,12 +101,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PostPage({ params }: Props) {
   const resolvedParams = await params;
-  const slug = typeof resolvedParams.slug === 'string' ? resolvedParams.slug : resolvedParams.slug?.[0] || '';
-  
+  const slug =
+    typeof resolvedParams.slug === 'string'
+      ? resolvedParams.slug
+      : resolvedParams.slug?.[0] || '';
+
   if (!slug) {
     notFound();
   }
-  
+
   const post = await getPostBySlug(slug);
 
   if (!post) {
@@ -93,10 +117,10 @@ export default async function PostPage({ params }: Props) {
   }
 
   // Get related posts
-  const categoryIds = post.categories?.map((cat: any) => cat.id || cat).filter(Boolean) || [];
-  const relatedPosts = categoryIds.length > 0 
-    ? await getRelatedPosts(post.id, categoryIds)
-    : [];
+  const categoryIds =
+    post.categories?.map((cat: any) => cat.id || cat).filter(Boolean) || [];
+  const relatedPosts =
+    categoryIds.length > 0 ? await getRelatedPosts(post.id, categoryIds) : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -111,7 +135,7 @@ export default async function PostPage({ params }: Props) {
 
 function BackButton() {
   return (
-    <Link 
+    <Link
       href="/blog"
       className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
     >
@@ -120,4 +144,3 @@ function BackButton() {
     </Link>
   );
 }
-

@@ -18,22 +18,24 @@ interface Post {
   id: string;
   title: string;
   slug: string;
-  publishedAt: string;
+  publishedAt?: string;
   excerpt?: string;
   mainImage?: any;
   body: any;
-  author?: {
-    id: string;
-    name: string;
-    slug: string;
-    image?: any;
-    bio?: any;
-    socialLinks?: {
-      twitter?: string;
-      linkedin?: string;
-      github?: string;
-    };
-  };
+  author?:
+    | {
+        id: string;
+        name: string;
+        slug: string;
+        image?: any;
+        bio?: any;
+        socialLinks?: {
+          twitter?: string;
+          linkedin?: string;
+          github?: string;
+        };
+      }
+    | null;
   categories?: Array<{
     id: string;
     title: string;

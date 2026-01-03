@@ -64,11 +64,11 @@ export interface Post {
   id: string;
   title: string;
   slug: string;
-  author: Author | string;
+  author?: Author | null;
   mainImage?: Media | string;
   excerpt?: string;
   body: any; // Rich text content
-  categories?: (Category | string)[];
+  categories?: Category[];
   tags?: { tag: string }[];
   relatedPosts?: (Post | string)[];
   status: 'draft' | 'published' | 'scheduled';

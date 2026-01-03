@@ -27,15 +27,17 @@ interface Post {
   id: string;
   title: string;
   slug: string;
-  publishedAt: string;
+  publishedAt?: string;
   excerpt?: string;
   mainImage?: any;
-  author?: {
+  author?:
+    | {
     id: string;
     name: string;
     slug: string;
     image?: any;
-  };
+      }
+    | null;
   categories?: Array<{
     id: string;
     title: string;

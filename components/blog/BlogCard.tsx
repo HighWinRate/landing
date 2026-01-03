@@ -11,7 +11,7 @@ interface Post {
   id: string;
   title: string;
   slug: string;
-  publishedAt: string;
+  publishedAt?: string;
   excerpt?: string;
   mainImage?: any;
   author?: {
@@ -19,7 +19,7 @@ interface Post {
     name: string;
     slug: string;
     image?: any;
-  };
+  } | null;
   categories?: Array<{
     id: string;
     title: string;
@@ -32,7 +32,10 @@ interface BlogCardProps {
   imagePosition?: 'left' | 'right';
 }
 
-export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProps) {
+export default function BlogCard({
+  post,
+  imagePosition = 'right',
+}: BlogCardProps) {
   const publishedDate = post.publishedAt
     ? format(new Date(post.publishedAt), 'd MMMM yyyy')
     : '';
@@ -43,7 +46,9 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
   return (
     <Link href={`/blog/${post.slug}`} className="block w-full">
       <Card className="w-full hover:shadow-lg transition-shadow group">
-        <div className={`flex flex-col md:flex-row ${isImageLeft ? 'md:flex-row-reverse' : ''}`}>
+        <div
+          className={`flex flex-col md:flex-row ${isImageLeft ? 'md:flex-row-reverse' : ''}`}
+        >
           {/* تصویر */}
           {mainImageUrl && (
             <div className="relative w-full md:w-2/5 h-64 md:h-64 flex-shrink-0">
@@ -55,7 +60,7 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
               />
             </div>
           )}
-          
+
           {/* محتوا */}
           <div className="flex-1 flex flex-col p-6">
             <div className="flex-1">
@@ -67,7 +72,7 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
                   {post.excerpt}
                 </p>
               )}
-              
+
               {/* دسته‌بندی‌ها */}
               {post.categories && post.categories.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -85,7 +90,7 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
                 </div>
               )}
             </div>
-            
+
             <div className="flex items-center justify-between text-sm text-muted-foreground pt-4 border-t">
               {post.author && (
                 <Link
@@ -104,4 +109,3 @@ export default function BlogCard({ post, imagePosition = 'right' }: BlogCardProp
     </Link>
   );
 }
-

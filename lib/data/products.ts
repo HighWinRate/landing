@@ -27,7 +27,7 @@ interface RawProductRow extends LandingProduct {
 
 export async function getActiveProducts(limit = 6): Promise<LandingProduct[]> {
   const { data, error } = await supabase
-    .from<RawProductRow>('products')
+    .from('products')
     .select(`
       id,
       title,
@@ -53,8 +53,9 @@ export async function getActiveProducts(limit = 6): Promise<LandingProduct[]> {
   if (!data) {
     return [];
   }
+  const rows = data as unknown as RawProductRow[];
 
-  return data.map((product) => ({
+  return rows.map((product) => ({
     ...product,
     category: product.category ?? null,
   }));

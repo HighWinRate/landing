@@ -122,14 +122,56 @@ export default async function PostPage({ params }: Props) {
   const relatedPosts =
     categoryIds.length > 0 ? await getRelatedPosts(post.id, categoryIds) : [];
 
+  // ساخت JSON-LD برای Article Schema
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt || post.seo?.metaDescription,
+    image: post.mainImage ? getImageUrl(post.mainImage) : undefined,
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt,
+    author: {
+      '@type': 'Person',
+      name: post.author?.name || 'High Win Rate Team',
+      url: post.author?.slug
+        ? `https://highwinrate.com/blog/author/${post.author.slug}`
+        : undefined,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'High Win Rate',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://highwinrate.com/logo.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://highwinrate.com/blog/${slug}`,
+    },
+    keywords: post.seo?.keywords?.map((k: any) => k.keyword || k).join(', '),
+    articleSection: post.categories?.map((c) => c.title).join(', '),
+    inLanguage: 'fa',
+    url: `https://highwinrate.com/blog/${slug}`,
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <BackButton />
-        <BlogPost post={post} />
-        {relatedPosts.length > 0 && <RelatedPosts posts={relatedPosts} />}
+    <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      
+      <div className="min-h-screen bg-background">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <BackButton />
+          <BlogPost post={post} />
+          {relatedPosts.length > 0 && <RelatedPosts posts={relatedPosts} />}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -4,20 +4,48 @@ import Pagination from '@/components/blog/Pagination';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'وبلاگ | High Win Rate',
-  description:
-    'مقالات و راهنماهای کاربردی در زمینه معاملات و استراتژی‌های معاملاتی',
+type Props = {
+  params: { page: string };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const resolvedParams = await params;
+  const page = parseInt(resolvedParams.page) || 1;
+
+  const title = `وبلاگ - صفحه ${page}`;
+  const description = 'مقالات و راهنماهای کاربردی در زمینه معاملات و استراتژی‌های معاملاتی';
+  const url = `https://highwinrate.com/blog/page/${page}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      type: 'website',
+      locale: 'fa_IR',
+      siteName: 'High Win Rate',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: url,
+    },
+    robots: {
+      index: page === 1, // فقط صفحه اول را index کن
+      follow: true,
+    },
+  };
+}
 
 // Force dynamic rendering to always get fresh data
 export const dynamic = 'force-dynamic';
 
 const POSTS_PER_PAGE = 6;
-
-type Props = {
-  params: { page: string };
-};
 
 export default async function BlogPagePage({ params }: Props) {
   const resolvedParams = await params;

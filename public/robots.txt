@@ -1,0 +1,15 @@
+# robots.txt for High Win Rate
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /blog/check-tables/
+
+# Sitemaps
+Sitemap: https://highwinrate.com/sitemap.xml
+Sitemap: https://highwinrate.com/blog-sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+

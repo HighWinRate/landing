@@ -1,8 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
+import { getPublicStorageUrl } from './storage';
 
 // Initialize Supabase client for reading blog data
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl =
+  process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey =
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  '';
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   db: {
@@ -85,11 +90,30 @@ export interface Post {
 export function getImageUrl(image: Media | string | undefined | null): string {
   if (!image) return '';
   if (typeof image === 'string') return image;
+
+  // If it's a full URL already
+  if (
+    image.url &&
+    (image.url.startsWith('http') || image.url.startsWith('https'))
+  ) {
+    return image.url;
+  }
+
+  // Fallback: if we have a filename, construct the Supabase Storage URL
+  // The custom adapter in landing/storage/supabase-storage.ts prepends 'media/'
+  if (image.filename) {
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'blog-media';
+    return getPublicStorageUrl(bucket, `media/${image.filename}`) || '';
+  }
+
   return image.url || '';
 }
 
 // Get published posts with pagination
-export async function getPosts(page: number = 1, limit: number = 6): Promise<{
+export async function getPosts(
+  page: number = 1,
+  limit: number = 6
+): Promise<{
   posts: Post[];
   total: number;
   totalPages: number;
@@ -102,23 +126,46 @@ export async function getPosts(page: number = 1, limit: number = 6): Promise<{
     .select('*', { count: 'exact', head: true })
     .eq('status', 'published');
 
-  // Get posts with related data
-  const { data: posts, error } = await supabase
+  // Get posts with media and categories
+  // Note: we map DB columns (snake_case) to our interface (camelCase)
+  const { data, error } = await supabase
     .from('posts')
-    .select(`
+    .select(
+      `
       *,
-      author:authors(*),
-      mainImage:media(*),
-      categories(*)
-    `)
+      mainImage:featured_image_id(*),
+      author:author_id(*),
+      categories:posts_rels(categories(*))
+    `
+    )
     .eq('status', 'published')
-    .order('publishedAt', { ascending: false })
+    .order('published_date', { ascending: false })
     .range(offset, offset + limit - 1);
 
   if (error) {
     console.error('Error fetching posts:', error);
     return { posts: [], total: 0, totalPages: 0 };
   }
+
+  // Map data to our Post interface
+  const posts = (data || []).map((post: any) => ({
+    ...post,
+    publishedAt: post.published_date,
+    mainImage: post.mainImage,
+    author: post.author
+      ? {
+          ...post.author,
+          name: post.author.name || post.author.email, // Fallback to email
+        }
+      : null,
+    categories:
+      post.categories
+        ?.map((rel: any) => ({
+          ...rel.categories,
+          title: rel.categories?.name, // Map name to title
+        }))
+        .filter((c: any) => c.id) || [],
+  }));
 
   const total = count || 0;
   const totalPages = Math.ceil(total / limit);
@@ -134,13 +181,15 @@ export async function getPosts(page: number = 1, limit: number = 6): Promise<{
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   const { data: posts, error } = await supabase
     .from('posts')
-    .select(`
+    .select(
+      `
       *,
-      author:authors(*),
-      mainImage:media(*),
-      categories(*),
-      seo_ogImage:media(*)
-    `)
+      mainImage:featured_image_id(*),
+      author:author_id(*),
+      categories:posts_rels(categories(*)),
+      seo_ogImage:seo_og_image_id(*)
+    `
+    )
     .eq('slug', slug)
     .eq('status', 'published')
     .limit(1);
@@ -150,7 +199,25 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     return null;
   }
 
-  return posts[0] as Post;
+  const post = posts[0] as any;
+  return {
+    ...post,
+    publishedAt: post.published_date,
+    mainImage: post.mainImage,
+    author: post.author
+      ? {
+          ...post.author,
+          name: post.author.name || post.author.email,
+        }
+      : null,
+    categories:
+      post.categories
+        ?.map((rel: any) => ({
+          ...rel.categories,
+          title: rel.categories?.name,
+        }))
+        .filter((c: any) => c.id) || [],
+  } as Post;
 }
 
 // Get all post slugs for static generation
@@ -184,7 +251,9 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 // Get category by slug
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+export async function getCategoryBySlug(
+  slug: string
+): Promise<Category | null> {
   const { data: categories, error } = await supabase
     .from('categories')
     .select('*')
@@ -200,7 +269,9 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 }
 
 // Get posts by category
-export async function getPostsByCategory(categorySlug: string): Promise<Post[]> {
+export async function getPostsByCategory(
+  categorySlug: string
+): Promise<Post[]> {
   // First get the category ID
   const category = await getCategoryBySlug(categorySlug);
   if (!category) return [];
@@ -209,15 +280,16 @@ export async function getPostsByCategory(categorySlug: string): Promise<Post[]> 
   // The table is named: posts_categories (or similar based on Payload's naming)
   const { data: posts, error } = await supabase
     .from('posts')
-    .select(`
+    .select(
+      `
       *,
-      author:authors(*),
       mainImage:media(*),
       categories!inner(*)
-    `)
+    `
+    )
     .eq('status', 'published')
     .eq('categories.id', category.id)
-    .order('publishedAt', { ascending: false });
+    .order('published_date', { ascending: false });
 
   if (error) {
     console.error('Error fetching posts by category:', error);
@@ -231,10 +303,12 @@ export async function getPostsByCategory(categorySlug: string): Promise<Post[]> 
 export async function getAuthors(): Promise<Author[]> {
   const { data: authors, error } = await supabase
     .from('authors')
-    .select(`
+    .select(
+      `
       *,
       image:media(*)
-    `)
+    `
+    )
     .order('name', { ascending: true });
 
   if (error) {
@@ -249,10 +323,12 @@ export async function getAuthors(): Promise<Author[]> {
 export async function getAuthorBySlug(slug: string): Promise<Author | null> {
   const { data: authors, error } = await supabase
     .from('authors')
-    .select(`
+    .select(
+      `
       *,
       image:media(*)
-    `)
+    `
+    )
     .eq('slug', slug)
     .limit(1);
 
@@ -272,12 +348,14 @@ export async function getPostsByAuthor(authorSlug: string): Promise<Post[]> {
 
   const { data: posts, error } = await supabase
     .from('posts')
-    .select(`
+    .select(
+      `
       *,
       author:authors(*),
       mainImage:media(*),
       categories(*)
-    `)
+    `
+    )
     .eq('status', 'published')
     .eq('author', author.id)
     .order('publishedAt', { ascending: false });
@@ -300,16 +378,17 @@ export async function getRelatedPosts(
 
   const { data: posts, error } = await supabase
     .from('posts')
-    .select(`
+    .select(
+      `
       *,
-      author:authors(*),
       mainImage:media(*),
       categories!inner(*)
-    `)
+    `
+    )
     .eq('status', 'published')
     .neq('id', currentPostId)
     .in('categories.id', categoryIds)
-    .order('publishedAt', { ascending: false })
+    .order('published_date', { ascending: false })
     .limit(limit);
 
   if (error) {
@@ -322,17 +401,18 @@ export async function getRelatedPosts(
 
 // Get featured posts
 export async function getFeaturedPosts(limit: number = 3): Promise<Post[]> {
-  const { data: posts, error } = await supabase
+  const { data, error } = await supabase
     .from('posts')
-    .select(`
+    .select(
+      `
       *,
-      author:authors(*),
-      mainImage:media(*),
-      categories(*)
-    `)
+      mainImage:featured_image_id(*),
+      categories:posts_rels(categories(*))
+    `
+    )
     .eq('status', 'published')
     .eq('featured', true)
-    .order('publishedAt', { ascending: false })
+    .order('published_date', { ascending: false })
     .limit(limit);
 
   if (error) {
@@ -340,6 +420,16 @@ export async function getFeaturedPosts(limit: number = 3): Promise<Post[]> {
     return [];
   }
 
-  return (posts as Post[]) || [];
+  return (data || []).map((post: any) => ({
+    ...post,
+    publishedAt: post.published_date,
+    mainImage: post.mainImage,
+    categories:
+      post.categories
+        ?.map((rel: any) => ({
+          ...rel.categories,
+          title: rel.categories?.name,
+        }))
+        .filter((c: any) => c.id) || [],
+  })) as Post[];
 }
-

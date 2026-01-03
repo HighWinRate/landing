@@ -3,14 +3,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getImageUrl } from '@/lib/blog';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-// Helper function to get image URL
-function getImageUrl(image: any): string {
-  if (!image) return '';
-  if (typeof image === 'string') return image;
-  return image.url || '';
-}
 
 interface Post {
   id: string;

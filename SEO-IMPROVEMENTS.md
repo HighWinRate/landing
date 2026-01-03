@@ -5,19 +5,23 @@
 ## 1. فایل‌های اصلی SEO
 
 ### robots.txt ✅
+
 - **مسیر**: `/public/robots.txt`
 - **ویژگی‌ها**:
-  - اجازه دسترسی به تمام صفحات عمومی
+  - اجازه دسترسی به تمام صفحات عمومی (به طور پیش‌فرض)
   - محدودیت دسترسی به `/api/`, `/admin/`, `/_next/`
   - معرفی sitemap‌ها به موتورهای جستجو
-  - Crawl-delay برای احترام به بات‌های جستجوگر
+  - سینتکس استاندارد و سازگار با Google
+- **توجه**: از دستورات غیراستاندارد مثل `Crawl-delay` استفاده نشده
 
 ### Sitemap اصلی ✅
+
 - **مسیر**: `/app/sitemap.ts`
 - **شامل**: صفحات استاتیک اصلی (خانه، بلاگ)
 - **خروجی**: `https://highwinrate.com/sitemap.xml`
 
 ### Blog Sitemap ✅
+
 - **مسیر**: `/app/blog-sitemap.xml/route.ts`
 - **شامل**:
   - تمام پست‌های منتشر شده
@@ -29,11 +33,13 @@
 ## 2. Metadata و Open Graph Tags
 
 ### Root Layout (`/app/layout.tsx`) ✅
+
 بهبودهای اعمال شده:
+
 - **metadataBase**: تنظیم URL پایه برای تمام metadata
 - **title template**: قالب عنوان برای تمام صفحات
 - **keywords**: کلمات کلیدی گسترده‌تر
-- **Open Graph**: 
+- **Open Graph**:
   - تصویر OG با ابعاد استاندارد (1200x630)
   - نوع محتوا (website)
   - locale فارسی (fa_IR)
@@ -42,11 +48,14 @@
 - **verification**: آماده برای Google Search Console
 
 ### صفحه اصلی (`/app/page.tsx`) ✅
+
 Schema.org Structured Data:
+
 - **Organization Schema**: اطلاعات سازمان
 - **WebSite Schema**: اطلاعات وب‌سایت + SearchAction
 
 ### صفحه لیست بلاگ (`/app/blog/page.tsx`) ✅
+
 - Metadata کامل با Open Graph و Twitter Cards
 - **Blog Schema**: معرفی بلاگ به موتورهای جستجو
 - **Breadcrumb Schema**: مسیر ناوبری برای Google
@@ -54,6 +63,7 @@ Schema.org Structured Data:
 - Canonical URL
 
 ### صفحه پست بلاگ (`/app/blog/[slug]/page.tsx`) ✅
+
 - **BlogPosting Schema**: ساختار داده کامل مقاله شامل:
   - عنوان و توضیحات
   - تصویر شاخص
@@ -70,12 +80,14 @@ Schema.org Structured Data:
   - اطلاعات نویسنده
 
 ### صفحات دسته‌بندی (`/app/blog/category/[slug]/page.tsx`) ✅
+
 - Metadata داینامیک بر اساس دسته‌بندی
 - Open Graph و Twitter Cards
 - **Breadcrumb Schema**: مسیر ناوبری کامل
 - Canonical URL
 
 ### صفحات نویسنده (`/app/blog/author/[slug]/page.tsx`) ✅
+
 - Metadata داینامیک بر اساس نویسنده
 - **Person Schema**: اطلاعات نویسنده
 - **Breadcrumb Schema**: مسیر ناوبری
@@ -84,6 +96,7 @@ Schema.org Structured Data:
 - Canonical URL
 
 ### صفحات Pagination (`/app/blog/page/[page]/page.tsx`) ✅
+
 - Metadata داینامیک با شماره صفحه
 - **robots**: فقط صفحه اول index می‌شود
 - Canonical URL برای هر صفحه
@@ -92,7 +105,9 @@ Schema.org Structured Data:
 ## 3. ویژگی‌های SEO پیشرفته
 
 ### Structured Data (JSON-LD)
+
 تمام صفحات دارای structured data مناسب هستند:
+
 - ✅ Organization
 - ✅ WebSite (+ SearchAction)
 - ✅ Blog
@@ -101,17 +116,20 @@ Schema.org Structured Data:
 - ✅ BreadcrumbList (در تمام صفحات زیرمجموعه)
 
 ### Open Graph Tags
+
 - ✅ تصاویر با ابعاد استاندارد (1200x630 برای og:image)
 - ✅ Locale فارسی (fa_IR)
 - ✅ نوع محتوا مناسب (website, article, profile)
 - ✅ اطلاعات نویسنده در مقالات
 
 ### Twitter Cards
+
 - ✅ summary_large_image برای محتوای بصری
 - ✅ summary برای صفحات نویسنده
 - ✅ تصاویر و توضیحات مناسب
 
 ### Canonical URLs
+
 - ✅ تمام صفحات دارای canonical URL
 - ✅ جلوگیری از duplicate content
 - ✅ URL‌های ثابت و استاندارد
@@ -119,16 +137,19 @@ Schema.org Structured Data:
 ## 4. بهینه‌سازی‌های تکنیکال
 
 ### Performance
+
 - ✅ Dynamic rendering برای محتوای بلاگ
 - ✅ Caching مناسب برای sitemap (1 ساعت)
 - ✅ استفاده از Next.js Image برای بهینه‌سازی تصاویر
 
 ### Accessibility
+
 - ✅ Alt text برای تمام تصاویر
 - ✅ Semantic HTML (h1, h2, article, etc.)
 - ✅ RTL support برای فارسی
 
 ### Mobile-First
+
 - ✅ Responsive design
 - ✅ Meta viewport
 - ✅ Touch-friendly navigation
@@ -138,6 +159,7 @@ Schema.org Structured Data:
 ### کارهایی که باید انجام دهید:
 
 1. **تصاویر Open Graph**:
+
    ```bash
    # تصاویر زیر را در پوشه /public/ قرار دهید:
    - /public/og-image.png (1200x630)
@@ -200,6 +222,7 @@ npm start
 ## 7. نتیجه‌گیری
 
 با این بهبودها، سایت شما آماده است برای:
+
 - ✅ Indexing بهتر در Google
 - ✅ نمایش Rich Snippets
 - ✅ بهبود CTR در نتایج جستجو
@@ -208,4 +231,3 @@ npm start
 - ✅ رتبه‌بندی بهتر در نتایج جستجو
 
 موفق باشید! 🚀
-

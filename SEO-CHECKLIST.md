@@ -6,7 +6,8 @@
 ```
 ✓ Allow/Disallow rules
 ✓ Sitemap references
-✓ Crawl-delay
+✓ استاندارد Google-compliant
+✓ بدون دستورات غیرپشتیبانی شده (Crawl-delay حذف شد)
 ```
 
 ### 2. `/app/sitemap.ts` ✅
